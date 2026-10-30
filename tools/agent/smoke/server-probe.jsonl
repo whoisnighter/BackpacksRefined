@@ -1,0 +1,7 @@
+// A dedicated server's queue answers with nobody online.
+//   ./gradlew ":<node>:runServer" -Pagent=tools/agent/smoke/server-probe.jsonl
+//   python tools/agent/drive.py run/<node>/agent/server tools/agent/smoke/server-probe.jsonl --verify --max-age 10
+// Any node, once run/<node>/eula.txt has been accepted by hand.
+{"id": "probe", "command": "probe", "expect": {"ok": true, "result.side": "server", "result.dev": true}}
+{"id": "info", "command": "server.info", "expect": {"ok": true, "result.dedicated": true, "result.players": 0}}
+{"id": "players", "command": "server.players", "expect": {"ok": true, "result.count": 0}}

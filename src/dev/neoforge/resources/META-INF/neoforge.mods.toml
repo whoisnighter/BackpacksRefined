@@ -1,0 +1,28 @@
+# The dev tools mod on NeoForge, the counterpart of src/dev/resources/fabric.mod.json. Development
+# only, never published. See src/dev/java/AGENTS.md.
+modLoader = "javafml"
+loaderVersion = "[1,)"
+license = "MIT"
+
+[[mods]]
+modId = "backpacksrefined_dev"
+version = "1.0.0"
+displayName = "Backpacks Refined Dev Tools"
+description = '''Development-only tooling for Backpacks Refined: the agent queue. Never published.'''
+
+# The virtual pointer, the refused mouse grab and the recording's frame timing. Client only, so a
+# dedicated server never loads the target classes and the mixins simply do not apply there.
+[[mixins]]
+config = "backpacksrefined.dev.mixins.json"
+
+# Stops an unattended -Pagent client that failed to load, instead of leaving it on the error screen.
+# NeoForge's own screen, so NeoForge's own config. See LoadingErrorScreenMixin.
+[[mixins]]
+config = "backpacksrefined.dev.neoforge.mixins.json"
+
+[[dependencies.backpacksrefined_dev]]
+modId = "backpacksrefined"
+type = "required"
+versionRange = "[0,)"
+ordering = "AFTER"
+side = "BOTH"

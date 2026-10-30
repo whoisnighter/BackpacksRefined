@@ -1,0 +1,10 @@
+# Versions of the libraries the build itself uses. The Gradle plugins Stonecutter, Loom and
+# ModDevGradle are in settings.gradle.kts, since a settings `plugins {}` block cannot read a catalog;
+# the Minecraft-bound dependencies are in stonecutter.properties.toml.
+[versions]
+mod-publish = "2.1.1"
+mixin = "0.8.5"
+
+[libraries]
+mod-publish-plugin = { module = "me.modmuss50:mod-publish-plugin", version.ref = "mod-publish" }
+mixin-processor = { module = "org.spongepowered:mixin", version.ref = "mixin" }

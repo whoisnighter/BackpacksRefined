@@ -1,0 +1,16 @@
+.gradle/
+build/
+# Kotlin's per-project data, which build-logic's `kotlin-dsl` writes.
+.kotlin/
+# Each node's build output and Stonecutter's generated sources. versions/ holds nothing committed.
+versions/
+# Development worlds and logs, one directory per node.
+run/
+out/
+*.iml
+.idea/
+.vscode/
+# Local agent workspace
+.claude/
+# Publishing tokens; see .env.template.
+.env

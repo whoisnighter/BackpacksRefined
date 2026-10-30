@@ -1,0 +1,9 @@
+{
+  "required": true,
+  "package": "com.backpacksrefined.dev.neoforge.mixin",
+  "compatibilityLevel": "${java}",
+  "client": [
+    "LoadingErrorScreenMixin"
+  ],
+  "injectors": { "defaultRequire": 1 }
+}

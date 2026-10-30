@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "${id}",
+  "version": "${version}",
+  "name": "${name}",
+  "description": "${description}",
+  "authors": ["${authors}"],
+  "contributors": ["Spydnel (Backpacks for Dummies)"],
+  "contact": {
+    "homepage": "${homepage}",
+    "sources": "${sources}",
+    "issues": "${issues}"
+  },
+  "license": "${license}",
+  "icon": "assets/backpacksrefined/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.backpacksrefined.fabric.BackpacksRefinedFabric"],
+    "client": ["com.backpacksrefined.client.fabric.BackpacksRefinedFabricClient"]
+  },
+  "mixins": [
+    "backpacksrefined.mixins.json",
+    { "config": "backpacksrefined.client.mixins.json", "environment": "client" }
+  ],
+  "depends": {
+    "fabricloader": ">=${loader}",
+    "minecraft": "${minecraft}",
+    "java": ">=${java}",
+    "fabric-api": "*"
+  },
+  "suggests": {
+    "modmenu": "*"
+  }
+}

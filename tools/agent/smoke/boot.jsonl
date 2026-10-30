@@ -1,0 +1,7 @@
+// A client comes up, its queue answers, and it reports what it is. No world needed.
+//   ./gradlew ":<node>:runClient" -Pagent=tools/agent/smoke/boot.jsonl
+//   python tools/agent/drive.py run/<node>/agent/client tools/agent/smoke/boot.jsonl --verify --max-age 10
+// Any node. Read the DONE line in run/<node>/logs/latest.log first: "DONE script answered" is a finished run.
+{"id": "probe", "command": "probe", "expect": {"ok": true, "result.side": "client", "result.dev": true}}
+{"id": "wait", "command": "wait", "args": {"ticks": 20}, "expect": {"ok": true}}
+{"id": "info", "command": "client.info", "expect": {"ok": true, "result.driven": true, "result.mouseGrabbed": false}}

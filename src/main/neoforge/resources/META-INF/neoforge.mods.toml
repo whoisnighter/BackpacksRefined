@@ -1,0 +1,40 @@
+# The NeoForge manifest, the counterpart of src/main/fabric/resources/fabric.mod.json. Templated from
+# stonecutter.properties.toml by processResources (gradle/moddev.gradle.kts), which expands comments
+# too, so no placeholder is written in one. Keep the manifests saying the same thing.
+modLoader = "javafml"
+loaderVersion = "[1,)"
+license = "${license}"
+issueTrackerURL = "${issues}"
+
+[[mods]]
+modId = "${id}"
+version = "${version}"
+displayName = "${name}"
+description = '''${description}'''
+authors = "${authors}"
+credits = "${credits}"
+displayURL = "${homepage}"
+# A square icon; NeoForge reads `logoFile` as a deprecated banner.
+iconFile = "assets/backpacksrefined/icon.png"
+
+# FML has no per-side mixin config: client-only mixins go in a config's own "client" list.
+[[mixins]]
+config = "backpacksrefined.mixins.json"
+
+[[mixins]]
+config = "backpacksrefined.client.mixins.json"
+
+# `ordering` and `side` are read with Enum.valueOf, so they must be upper case; `type` is not.
+[[dependencies.backpacksrefined]]
+modId = "neoforge"
+type = "required"
+versionRange = "[${neoforge},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.backpacksrefined]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft}"
+ordering = "NONE"
+side = "BOTH"

@@ -1,0 +1,33 @@
+# The Forge manifest, the counterpart of src/main/fabric/resources/fabric.mod.json. Templated from
+# stonecutter.properties.toml by processResources (gradle/moddev.gradle.kts), which expands comments
+# too, so no placeholder is written in one. Forge 47 reads no mixin configs from this file: they are in
+# the jar manifest, which build.forge.gradle.kts writes. Any Forge 47 build is taken: 1.20.1 packs stay
+# on older 47 builds.
+modLoader = "javafml"
+loaderVersion = "[47,)"
+license = "${license}"
+issueTrackerURL = "${issues}"
+
+[[mods]]
+modId = "${id}"
+version = "${version}"
+displayName = "${name}"
+description = '''${description}'''
+authors = "${authors}"
+credits = "${credits}"
+displayURL = "${homepage}"
+logoFile = "assets/backpacksrefined/icon.png"
+
+[[dependencies.backpacksrefined]]
+modId = "forge"
+mandatory = true
+versionRange = "[47,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.backpacksrefined]]
+modId = "minecraft"
+mandatory = true
+versionRange = "${minecraft}"
+ordering = "NONE"
+side = "BOTH"

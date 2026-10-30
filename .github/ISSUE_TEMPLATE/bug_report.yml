@@ -1,0 +1,57 @@
+name: Bug report
+description: Report broken or incorrect behaviour in Backpacks Refined.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: build
+    attributes:
+      label: Minecraft version and loader
+      options:
+        - Fabric 26.3
+        - Fabric 26.2
+        - Fabric 1.21.11
+        - NeoForge 26.3
+        - NeoForge 1.21.1
+        - Forge 1.20.1
+    validations:
+      required: true
+
+  - type: input
+    id: mod-version
+    attributes:
+      label: Backpacks Refined version
+      description: It is in the jar file name, including the part after the plus sign.
+      placeholder: 0.1.0+26.3-fabric
+    validations:
+      required: true
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened
+      description: What you saw, and what you expected instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Create a new world in survival mode.
+        2. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: other-mods
+    attributes:
+      label: Other mods installed
+      description: A list, or None. Does it still happen with only Backpacks Refined installed?
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Log or crash report
+      description: Attach logs/latest.log, or the report in crash-reports/ for a crash.

@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "com.backpacksrefined.dev.mixin",
+  "compatibilityLevel": "${java}",
+  "client": [
+    "FrameStartMixin",
+    "MouseGrabMixin",
+    "MouseHandlerAccessor",
+    "MouseMoveMixin"
+  ],
+  "injectors": { "defaultRequire": 1 }
+}

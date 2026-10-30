@@ -1,0 +1,69 @@
+# Everything that differs per build node. Gradle-only options stay in gradle.properties.
+#
+# Layered by loader: stonecutter.gradle.kts tags every node with its Minecraft version and its loader,
+# so the node `26.3-neoforge` reads the top level, then `["26.3"]`, what both loaders of that version
+# share, and `[neoforge."26.3"]`, what only NeoForge has. A key belongs in exactly one table a node
+# reads. A loader table is what makes a node: CI finds the nodes to build by it.
+mod.id = "backpacksrefined"
+mod.name = "Backpacks Refined"
+mod.group = "com.backpacksrefined"
+mod.version = "0.1.0"
+mod.description = "A simple, immersive backpack mod: wear a backpack in your chestplate slot or place it down as a container, with no extra keybinds, menus or slots."
+mod.authors = "Nighter"
+mod.license = "MIT"
+# Who the mod builds on; see CREDITS.md and licenses/.
+mod.credits = "Based on Backpacks for Dummies by Spydnel (MIT)"
+mod.homepage = "https://github.com/whoisnighter/BackpacksRefined"
+mod.sources = "https://github.com/whoisnighter/BackpacksRefined"
+mod.issues = "https://github.com/whoisnighter/BackpacksRefined/issues"
+
+# The release channel Modrinth and CurseForge show: release, beta or alpha.
+publish.type = "alpha"
+# Modrinth and CurseForge project ids. Empty leaves that site out of `publishMods`; the tokens come
+# from the environment or .env (see .env.template), never from this file.
+publish.modrinth_id = ""
+publish.curseforge_id = ""
+
+deps.fabric_loader = "0.19.5"
+
+# Minecraft versions per node. `mod.mc_compat` is the range the manifest claims, in the loader's own
+# syntax; `mod.mc_releases` the versions the upload lists, comma separated (Stonecutter exports no TOML array
+# to the node).
+
+["26.3"]
+mod.mc_releases = "26.3"
+
+[fabric."26.3"]
+mod.mc_compat = "~26.3"
+deps.fabric_api = "0.165.0+26.3"
+deps.modmenu = "21.0.0"
+
+[neoforge."26.3"]
+mod.mc_compat = "[26.3,26.4)"
+deps.neoforge = "26.3.0.83"
+
+[fabric."26.2"]
+mod.mc_compat = "~26.2"
+mod.mc_releases = "26.2"
+deps.fabric_api = "0.161.0+26.2"
+deps.modmenu = "20.0.3"
+
+[fabric."1.21.11"]
+mod.mc_compat = "1.21.11"
+mod.mc_releases = "1.21.11"
+deps.fabric_api = "0.141.6+1.21.11"
+deps.modmenu = "17.0.1"
+
+# NeoForge on 1.21.1 only: 1.21 is NeoForge 21.0, a separate generation, so the jar does not claim it.
+[neoforge."1.21.1"]
+mod.mc_compat = "[1.21.1,1.21.2)"
+mod.mc_releases = "1.21.1"
+deps.neoforge = "21.1.262"
+
+# MinecraftForge 47, built with ModDevGradle Legacy; see build.forge.gradle.kts.
+[forge."1.20.1"]
+mod.mc_compat = "[1.20.1,1.20.2)"
+mod.mc_releases = "1.20.1"
+deps.forge = "47.4.28"
+# Nested in the jar, since Forge 47 does not ship it. Maven Central.
+deps.mixinextras = "0.5.5"

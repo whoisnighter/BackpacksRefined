@@ -1,0 +1,27 @@
+name: Feature suggestion
+description: Suggest a backpack feature, setting or mod integration.
+title: "[Suggestion] "
+labels: ["enhancement"]
+body:
+  - type: checkboxes
+    id: preliminary
+    attributes:
+      label: Before you suggest
+      options:
+        - label: I searched the existing issues and this has not been suggested already.
+          required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What is missing or awkward in play today?
+    validations:
+      required: true
+
+  - type: textarea
+    id: idea
+    attributes:
+      label: The suggestion
+    validations:
+      required: true

@@ -1,0 +1,7 @@
+{
+  "required": true,
+  "package": "com.backpacksrefined.client.mixin",
+  "compatibilityLevel": "${java}",
+  "client": [],
+  "injectors": { "defaultRequire": 1 }
+}

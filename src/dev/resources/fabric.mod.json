@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "backpacksrefined_dev",
+  "version": "1.0.0",
+  "name": "Backpacks Refined Dev Tools",
+  "description": "Development-only tooling for Backpacks Refined: the agent queue. Never published.",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.backpacksrefined.dev.fabric.BackpacksDevFabric"
+    ],
+    "client": [
+      "com.backpacksrefined.dev.fabric.BackpacksDevFabricClient"
+    ]
+  },
+  "mixins": [
+    "backpacksrefined.dev.mixins.json"
+  ],
+  "depends": {
+    "backpacksrefined": "*",
+    "fabric-command-api-v2": "*",
+    "fabric-lifecycle-events-v1": "*"
+  }
+}

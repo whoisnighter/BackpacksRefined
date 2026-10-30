@@ -1,0 +1,80 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+    paths-ignore: ["**/*.md", ".github/ISSUE_TEMPLATE/**"]
+  pull_request:
+    paths-ignore: ["**/*.md", ".github/ISSUE_TEMPLATE/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  discover:
+    name: Discover nodes
+    runs-on: ubuntu-latest
+    outputs:
+      nodes: ${{ steps.read.outputs.nodes }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: Read nodes from stonecutter.properties.toml
+        id: read
+        # A node is a loader table, `[fabric."26.3"]` being the node `26.3-fabric`, so the matrix
+        # cannot drift from what the build knows. A shared `["26.3"]` table is not a node.
+        shell: python
+        run: |
+          import json, os, tomllib
+          with open("stonecutter.properties.toml", "rb") as f:
+              data = tomllib.load(f)
+          nodes = [f"{mc}-{loader}" for loader in ("fabric", "neoforge", "forge") for mc in data.get(loader, {})]
+          print(nodes)
+          with open(os.environ["GITHUB_OUTPUT"], "a") as out:
+              out.write(f"nodes={json.dumps(nodes)}\n")
+
+  build:
+    name: Build ${{ matrix.node }}
+    needs: discover
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ${{ fromJSON(needs.discover.outputs.nodes) }}
+    steps:
+      - uses: actions/checkout@v5
+
+      # Gradle runs on 25; the nodes compile on 17 (1.20.1), 21 (1.21.x) or 25 (26.x). All three are
+      # installed so no job downloads a JDK at build time.
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: |
+            17
+            21
+            25
+
+      - uses: gradle/actions/setup-gradle@v5
+
+      - name: Configure Gradle for one node
+        # setup-java exports every JDK as JAVA_HOME_<major>_X64 but does not tell Gradle. Configure on
+        # demand keeps a job from setting up every other node's Minecraft too.
+        run: |
+          mkdir -p ~/.gradle
+          echo "org.gradle.java.installations.fromEnv=JAVA_HOME_17_X64,JAVA_HOME_21_X64,JAVA_HOME_25_X64" >> ~/.gradle/gradle.properties
+          echo "org.gradle.configureondemand=true" >> ~/.gradle/gradle.properties
+
+      - name: Build
+        run: ./gradlew ":${{ matrix.node }}:buildAndCollect" ":${{ matrix.node }}:check" --stacktrace
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BackpacksRefined-${{ matrix.node }}
+          path: |
+            build/libs/*.jar
+            !build/libs/*-sources.jar
+          if-no-files-found: error
