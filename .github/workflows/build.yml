@@ -22,7 +22,7 @@ jobs:
     outputs:
       nodes: ${{ steps.read.outputs.nodes }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Read nodes from stonecutter.properties.toml
         id: read
         # A node is a loader table, `[fabric."26.3"]` being the node `26.3-fabric`, so the matrix
@@ -46,7 +46,7 @@ jobs:
       matrix:
         node: ${{ fromJSON(needs.discover.outputs.nodes) }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       # Gradle runs on 25; the nodes compile on 17 (1.20.1), 21 (1.21.x) or 25 (26.x). All three are
       # installed so no job downloads a JDK at build time.
