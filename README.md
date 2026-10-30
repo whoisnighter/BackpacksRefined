@@ -8,13 +8,6 @@ A simple, immersive backpack mod for **Fabric**, **NeoForge** and **Forge**.
 
 </div>
 
-## Overview
-* **No Extra Slots:** No keybinds, menus or slots of its own. A backpack is worn in the chestplate slot.
-* **Wear or Place:** Shift-click to put a backpack down or pick it back up. Placed, it is a container like any other, so swapping between several backpacks is quick and sharing one with other players is easy.
-* **Dyeing:** Backpacks take any colour, the same way leather armour does.
-* **Kept on Death:** A backpack with items in it places itself where the player died, and floats on water.
-* **Game Feel:** Extra animation and flair, for immersion rather than menus.
-
 ## Requirements
 
 | Minecraft | Java | Fabric Loader (min.) | Fabric API | NeoForge / Forge |
