@@ -50,7 +50,7 @@ jobs:
 
       # Gradle runs on 25; the nodes compile on 17 (1.20.1), 21 (1.21.x) or 25 (26.x). All three are
       # installed so no job downloads a JDK at build time.
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: |
