@@ -71,7 +71,7 @@ jobs:
       - name: Build
         run: ./gradlew ":${{ matrix.node }}:buildAndCollect" ":${{ matrix.node }}:check" --stacktrace
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: BackpacksRefined-${{ matrix.node }}
           path: |
