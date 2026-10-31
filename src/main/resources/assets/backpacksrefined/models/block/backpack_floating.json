@@ -1,0 +1,176 @@
+{
+  "parent": "backpacksrefined:block/backpack",
+  "elements": [
+    {
+      "name": "base",
+      "from": [
+        3,
+        -3,
+        4
+      ],
+      "to": [
+        13,
+        8,
+        12
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            2.0,
+            0.0,
+            4.5,
+            2.0
+          ],
+          "texture": "#backpack"
+        },
+        "down": {
+          "uv": [
+            4.5,
+            2.0,
+            7.0,
+            0.0
+          ],
+          "texture": "#backpack"
+        },
+        "north": {
+          "uv": [
+            2.0,
+            2.0,
+            4.5,
+            4.75
+          ],
+          "texture": "#backpack"
+        },
+        "south": {
+          "uv": [
+            6.5,
+            2.0,
+            9.0,
+            4.75
+          ],
+          "texture": "#backpack"
+        },
+        "east": {
+          "uv": [
+            0.0,
+            2.0,
+            2.0,
+            4.75
+          ],
+          "texture": "#backpack"
+        },
+        "west": {
+          "uv": [
+            4.5,
+            2.0,
+            6.5,
+            4.75
+          ],
+          "texture": "#backpack"
+        }
+      }
+    },
+    {
+      "name": "lid",
+      "from": [
+        2.5,
+        5,
+        3.5
+      ],
+      "to": [
+        13.5,
+        10,
+        12.5
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            2.25,
+            4.75,
+            5.0,
+            7.0
+          ],
+          "texture": "#backpack"
+        },
+        "down": {
+          "uv": [
+            5.0,
+            7.0,
+            7.75,
+            4.75
+          ],
+          "texture": "#backpack"
+        },
+        "north": {
+          "uv": [
+            2.25,
+            7.0,
+            5.0,
+            8.25
+          ],
+          "texture": "#backpack"
+        },
+        "south": {
+          "uv": [
+            7.25,
+            7.0,
+            10.0,
+            8.25
+          ],
+          "texture": "#backpack"
+        },
+        "east": {
+          "uv": [
+            0.0,
+            7.0,
+            2.25,
+            8.25
+          ],
+          "texture": "#backpack"
+        },
+        "west": {
+          "uv": [
+            5.0,
+            7.0,
+            7.25,
+            8.25
+          ],
+          "texture": "#backpack"
+        }
+      }
+    },
+    {
+      "name": "lid_underside",
+      "from": [
+        2.5,
+        7,
+        3.5
+      ],
+      "to": [
+        13.5,
+        7,
+        12.5
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            0.0,
+            8.25,
+            2.75,
+            10.5
+          ],
+          "texture": "#backpack"
+        },
+        "down": {
+          "uv": [
+            2.75,
+            10.5,
+            5.5,
+            8.25
+          ],
+          "texture": "#backpack"
+        }
+      }
+    }
+  ]
+}

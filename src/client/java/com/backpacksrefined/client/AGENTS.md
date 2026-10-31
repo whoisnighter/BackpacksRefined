@@ -9,6 +9,7 @@ compiled into `main` and only reached from the client (see the root `AGENTS.md`)
 | `BackpackRendering` | The worn backpack's model layer, texture and shape (`createWornLayer`), the same on every version |
 | `platform/BackpackWornModel` | A humanoid model with every part hidden but the backpack hung on its body |
 | `platform/BackpackWornLayer` | The render layer that draws it, and `create(renderer, models)`, which makes one for a renderer with a humanoid model |
+| `mixin/CapeLayerMixin` | Skips a player's cape while they wear a backpack. Listed in `backpacksrefined.client.mixins.json` |
 
 ## Drawing the worn backpack
 
@@ -30,6 +31,13 @@ The layer reads the chest slot from the render state (`HumanoidRenderState.chest
 the game fills that only for an item whose `equippable` names an equipment asset, so the backpack names
 one with no file behind it (`platform/WearableBlockItem` in `src/main/java`). Take the asset away and
 the layer silently draws nothing.
+
+## The cape
+
+`CapeLayerMixin` cancels the vanilla cape layer at its head when the chest slot holds a backpack: from
+1.21.9 in `submit`, reading `AvatarRenderState.chestEquipment`; before, in `render`, reading the
+player's chest slot. A dev account has no cape, so the agent client cannot show it; a boot only proves
+the mixin found its target (`injectors.defaultRequire` is 1, so a missing target fails the load).
 
 ## Registering, per loader
 

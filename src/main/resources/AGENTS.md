@@ -5,9 +5,11 @@ are kept out of the jars.
 
 ```
 assets/backpacksrefined/
-  blockstates/backpack.json       one model, turned by `facing`
+  blockstates/backpack.json       turned by `facing`, the floating model when `floating`
   models/block/backpack.json      the placed backpack (see below)
-  models/item/backpack.json       the item: a flat sprite, as in the old mod
+  models/block/backpack_floating.json  the same, 3 pixels lower: half sunk into the water under it
+  models/item/backpack.json       the item: the block model in 3D, with display transforms
+  models/item/backpack_flat.json  the old mod's flat sprite, only for the creative tab's icon
   items/backpack.json             the item model definition 1.21.4 and later read; older versions ignore it
   textures/item/backpack.png      16x16 sprite
   textures/block/backpack.png     64x64, the old mod's textures/entity/backpack.png
@@ -33,6 +35,13 @@ Like the sources, a data file is written for 26.3, and `processResources` rewrit
 The ingredient rewrite works line by line and only on one-character keys, the keys a shaped recipe's
 `key` has, so keep one ingredient a line. A format change it does not cover gets a rule there, not a
 copy of the file per version. Check the result in `versions/<node>/build/resources/main/data`.
+
+## The flat icon
+
+The creative tab's icon is the backpack with custom model data set (`platform/FlatIcon`), and the
+item models send that to `backpack_flat`: from 1.21.4 `items/backpack.json` selects on the string
+`flat`; before, `models/item/backpack.json` has an override on `custom_model_data` 1, which 1.21.4 and
+later ignore. Every other backpack is drawn in 3D.
 
 ## The block model
 

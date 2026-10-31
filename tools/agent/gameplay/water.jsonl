@@ -1,0 +1,29 @@
+// A placed backpack floats on still water and can stand in water, and the creative tab and the
+// inventory draw it: the tab's icon flat, the backpack itself in 3D.
+//   python tools/agent/new_world.py <node> BackpackAgent
+//   ./gradlew ":<node>:runClient" -Pagent=tools/agent/gameplay/water.jsonl -Pquickplay=BackpackAgent
+//   python tools/agent/drive.py run/<node>/agent/client tools/agent/gameplay/water.jsonl --verify --max-age 10
+// Any node. The backpack is set before the water under it, so it is the neighbor update that makes it
+// float; taking the water away sets it down again. Look at the captures: `water` (the floating one
+// sits lower than the one beside it), `hotbar` and `creative` (the backpack in 3D, the mod's tab icon
+// flat).
+{"id": "settle", "command": "wait", "args": {"ticks": 100}, "expect": {"ok": true}}
+{"id": "creative", "command": "server.command", "args": {"command": "gamemode creative @a"}, "expect": {"ok": true}}
+{"id": "face", "command": "server.command", "args": {"command": "execute as @a at @s run tp @s ~ ~ ~ 0 35"}, "expect": {"ok": true}}
+{"id": "glass", "command": "server.command", "args": {"command": "execute as @a at @s run fill ~-1 ~-2 ~3 ~1 ~-2 ~5 minecraft:glass"}, "expect": {"ok": true}}
+{"id": "place", "command": "server.command", "args": {"command": "execute as @a at @s run setblock ~ ~ ~4 backpacksrefined:backpack[facing=north]"}, "expect": {"ok": true}}
+{"id": "beside", "command": "server.command", "args": {"command": "execute as @a at @s run setblock ~2 ~ ~4 backpacksrefined:backpack[facing=north]"}, "expect": {"ok": true}}
+{"id": "notYet", "command": "server.command", "args": {"command": "execute as @a at @s if block ~ ~ ~4 backpacksrefined:backpack[floating=false]"}, "expect": {"ok": true, "result.messages": ["Test passed"]}}
+{"id": "pool", "command": "server.command", "args": {"command": "execute as @a at @s run fill ~-1 ~-1 ~3 ~1 ~-1 ~5 minecraft:water"}, "expect": {"ok": true}}
+{"id": "floats", "command": "server.command", "args": {"command": "execute as @a at @s if block ~ ~ ~4 backpacksrefined:backpack[floating=true,waterlogged=false]"}, "expect": {"ok": true, "result.messages": ["Test passed"]}}
+{"id": "inWater", "command": "server.command", "args": {"command": "execute as @a at @s run setblock ~-3 ~ ~4 backpacksrefined:backpack[facing=north,waterlogged=true]"}, "expect": {"ok": true}}
+{"id": "flowed", "command": "wait", "args": {"ticks": 40}, "expect": {"ok": true}}
+{"id": "stillIn", "command": "server.command", "args": {"command": "execute as @a at @s if block ~-3 ~ ~4 backpacksrefined:backpack[waterlogged=true,floating=false]"}, "expect": {"ok": true, "result.messages": ["Test passed"]}}
+{"id": "give", "command": "server.command", "args": {"command": "item replace entity @a hotbar.0 with backpacksrefined:backpack"}, "expect": {"ok": true}}
+{"id": "synced", "command": "wait", "args": {"ticks": 10}, "expect": {"ok": true}}
+{"id": "water", "command": "client.capture", "args": {"name": "water"}, "expect": {"ok": true}}
+{"id": "drain", "command": "server.command", "args": {"command": "execute as @a at @s run fill ~-1 ~-1 ~3 ~1 ~-1 ~5 minecraft:stone"}, "expect": {"ok": true}}
+{"id": "landed", "command": "server.command", "args": {"command": "execute as @a at @s if block ~ ~ ~4 backpacksrefined:backpack[floating=false]"}, "expect": {"ok": true, "result.messages": ["Test passed"]}}
+{"id": "open", "command": "client.screen", "args": {"open": "inventory"}, "expect": {"ok": true}}
+{"id": "opened", "command": "wait", "args": {"ticks": 10}, "expect": {"ok": true}}
+{"id": "inventory", "command": "client.capture", "args": {"name": "creative"}, "expect": {"ok": true}}

@@ -1,6 +1,19 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "backpacksrefined:item/backpack"
+    "type": "minecraft:select",
+    "property": "minecraft:custom_model_data",
+    "cases": [
+      {
+        "when": "flat",
+        "model": {
+          "type": "minecraft:model",
+          "model": "backpacksrefined:item/backpack_flat"
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "backpacksrefined:item/backpack"
+    }
   }
 }
