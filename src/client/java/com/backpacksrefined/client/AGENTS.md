@@ -72,8 +72,8 @@ mixin calls it from the screen's `init`, `removed`, drawing and mouse methods:
 
 ## The placed backpack's screen
 
-`BackpackScreen` draws one window around the slots `BackpackMenu` placed (the backpack's in rows of
-four on the left, the player's inventory on the right), with `VanillaWindow`, so it looks like the
+`BackpackScreen` draws one window around the slots `BackpackMenu` placed (the backpack's in centred rows
+of eight on top, the player's inventory below, as a chest), with `VanillaWindow`, so it looks like the
 panel. Vanilla draws the slots' items, the labels and the tooltip. From 26.1 the size goes to the
 constructor and the window is drawn in `extractBackground`; before, `renderBg` draws it and `render`
 adds the tooltip (and on 1.20.1 the darkened world first).

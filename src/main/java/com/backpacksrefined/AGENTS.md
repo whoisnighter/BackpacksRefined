@@ -10,7 +10,7 @@ outside `platform/` and `mixin/` has a version conditional (`checkVersionSeam`).
 | `block/` | `BackpacksBlocks` and `BackpacksBlockEntities` (the registries), `BackpackBlock`, the placed backpack, and `BackpackBlockEntity`, which keeps its id |
 | `item/` | `BackpacksItems` (the registry), `BackpackTier` (the six tiers and their sizes), `BackpackItem`, and `BackpacksCreativeTabs`, the mod's own tab |
 | `storage/` | `BackpackStorage`: every backpack's items, by id, saved with the world; `BackpackContents`, one backpack's; `StorageSchema`, the saved layout's version and its migrations |
-| `menu/` | `BackpacksMenus` (the registry, a menu type per tier) and `BackpackMenu`: a placed backpack's menu, its slots in rows of four beside the player's inventory |
+| `menu/` | `BackpacksMenus` (the registry, a menu type per tier) and `BackpackMenu`: a placed backpack's menu, its slots in rows of eight above the player's inventory |
 | `network/` | `BackpackNetwork`: the panel's messages, their channels, and where each is handled |
 | `panel/` | `PanelServer`: the server side of the worn backpack's panel |
 | `platform/` | Where versions differ, and the loader seam (`platform/AGENTS.md`) |

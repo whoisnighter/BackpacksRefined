@@ -1,5 +1,5 @@
 // A backpack keeps its items through being placed, broken, picked up and worn: a placed one opens with
-// a right click, its slots in rows of four beside the inventory, and a worn one shows its slots in a
+// a right click, its slots in rows of eight above the inventory, and a worn one shows its slots in a
 // panel beside the inventory, where a click takes the items out.
 //   python tools/agent/new_world.py <node> BackpackAgent
 //   ./gradlew ":<node>:runClient" -Pagent=tools/agent/gameplay/storage.jsonl -Pquickplay=BackpackAgent

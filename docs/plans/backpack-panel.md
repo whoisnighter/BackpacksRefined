@@ -24,7 +24,7 @@ Done, on every node (compiled and `check`ed on all; played on 26.3-fabric only,
   backpack with a netherite upgrade template and an ingot at the smithing table. A crafted tier keeps
   the backpack it was made from, id and all (`item/BackpackCrafting`, through
   `mixin/ShapedRecipeMixin`); the smithing transform copies it by itself.
-- **A placed backpack opens with a right click**, its slots in rows of four beside the player's
+- **A placed backpack opens with a right click**, its slots in rows of eight above the player's
   inventory (see [Placed backpacks](#placed-backpacks)).
 - **The panel** beside every container screen but the creative one, with left and right clicks, shift
   click into the inventory and Alt and a click to store a menu slot. Payloads, validation and click
@@ -59,11 +59,15 @@ would otherwise drop a container's items when its block goes.
 
 Its menu is the mod's own (`menu/BackpackMenu`), with a menu type per tier (`menu/BackpacksMenus`),
 so the client knows the size from the type and the server sends nothing vanilla does not. Its slots
-are in rows of four, as the panel's are, so every tier fills its rows: two for the plain backpack's
-8, eight for netherite's 32. The screen (`client/platform/BackpackScreen`) is one window, drawn with
-the panel's fills: the backpack's name across the top, its slots on the left and the player's
-inventory on the right, bottoms lined up. Netherite's is 256 by 169, shorter than vanilla's largest
-chest. Its slots refuse what may not go inside another item, on both sides.
+are in rows of eight, centred over the player's inventory as a chest's are: one row for the plain
+backpack's 8, four for netherite's 32; copper's and gold's last row holds four, centred too. The
+screen (`client/platform/BackpackScreen`) is one window, drawn with the panel's fills, vanilla's
+chest's size for as many rows: the backpack's name across the top, its slots, then the player's
+inventory. Its slots refuse what may not go inside another item, on both sides.
+
+Decided: the slots were first in rows of four beside the inventory, which made a tall, narrow grid
+(eight rows for netherite); they lie wide above it now. Eight columns leave the grid one short of the
+inventory's nine, so it is centred for now.
 
 Decided: vanilla's chest menu was dropped, because its rows of nine left slots over on every tier
 (one on the plain backpack, four on netherite's 36). The cost is that a mod which knows only
