@@ -7,6 +7,50 @@ opening a separate backpack screen.
 Goals, in order: **no duplication exploits**, **lowest server, network and client cost**, **compatibility
 with other mods**, the same behaviour on every node.
 
+## Status
+
+Done, on every node (compiled and `check`ed on all; played on 26.3-fabric only,
+`tools/agent/gameplay/storage.jsonl`):
+
+- **Storage.** `storage/BackpackStorage` and `BackpackContents`, saved by `platform/BackpackSavedData`.
+  The id is in the item's custom data (`platform/BackpackIds`), not a component of the mod's own: no
+  registry entry on three loaders, and the creative screen keeps it.
+- **The plain backpack holds 27.** `BackpackItem.SIZE`; no other tier yet.
+- **A placed backpack opens with a right click**, as vanilla's three-row chest (see
+  [Placed backpacks](#placed-backpacks)).
+- **The panel** beside every container screen but the creative one, with left and right clicks, shift
+  click into the inventory and Alt and a click to store a menu slot. Payloads, validation and click
+  rules as below.
+
+Where it differs from what follows, the code is right and this plan was updated:
+
+- The panel is hung on screens by one mixin into `AbstractContainerScreen`
+  (`client/mixin/AbstractContainerScreenMixin`), not by each loader's screen events: one code path per
+  version instead of three loaders' events per version. It still never touches a menu.
+- The panel has nine rows and a column for each nine slots, so it never scrolls: 27 slots are three
+  columns, 63 would be seven. Nine columns do not fit beside the inventory at the usual GUI scales.
+- It sits left of the screen, or right when something moved the screen off centre (the recipe book,
+  another mod's side panel), found from the screen's position rather than from the recipe book.
+- Changed slots are sent after each click, not gathered for the end of the tick, and there is no
+  revision: each click answers at once with what changed, and a snapshot on opening covers the rest.
+
+Not done yet: tiers and smithing upgrades, admin commands, Trinkets and Curios, JEI, EMI and REI
+exclusion areas, the config (blocklist, side, toggle key), the dupe scripts under [Testing](#testing),
+and a creative player breaking a full placed backpack (it drops nothing, as for any block; the items
+stay in storage under its id).
+
+## Placed backpacks
+
+A placed backpack keeps the id, not the items (`block/BackpackBlockEntity`): placing takes the id from
+the item (`setPlacedBy`), breaking gives it back to the dropped item (`getDrops`), so the items never
+move and cannot be duplicated by placing and breaking. The block entity is a `Container` over the
+stored items, for its menu and for hoppers; from 1.21.5 it overrides `preRemoveSideEffects`, which
+would otherwise drop a container's items when its block goes.
+
+Its menu is vanilla's `ChestMenu` with `MenuType.GENERIC_9x3` (`menu/BackpackMenu`), so the client
+opens vanilla's chest screen and every mod that knows it (sorting, recipe viewers) knows this one.
+Only on the server are its 27 slots swapped for ones that refuse what may not go inside another item.
+
 ## Scope
 
 - **Only a worn backpack opens in the panel.** Worn means the chest slot, or a back slot from
@@ -261,3 +305,5 @@ Dupe scenarios to script, each expecting the total item count to stay unchanged:
 ## Open questions
 
 - Upgrade recipe costs: which template and how much material each tier takes.
+- A placed backpack of a larger tier: vanilla's chest menus stop at six rows (54), so 63 slots need a
+  menu of the mod's own.

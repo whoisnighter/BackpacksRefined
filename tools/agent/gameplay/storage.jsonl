@@ -1,0 +1,49 @@
+// A backpack keeps its items through being placed, broken, picked up and worn: a placed one opens as a
+// three-row chest with a right click, and a worn one shows its slots in a panel beside the inventory,
+// where a click takes the items out.
+//   python tools/agent/new_world.py <node> BackpackAgent
+//   ./gradlew ":<node>:runClient" -Pagent=tools/agent/gameplay/storage.jsonl -Pquickplay=BackpackAgent
+//   python tools/agent/drive.py run/<node>/agent/client tools/agent/gameplay/storage.jsonl --verify --max-age 10
+// Any node. The diamonds go in by command, through the placed backpack's container. Panel clicks are
+// measured from the centre of the inventory screen: its slot 4 (the fifth row of the first column) is 142 left and 16 down, the
+// inventory's first slot 72 left and 9 down. Look at the captures `placed` (the chest screen with the
+// diamonds) and `panel` (the panel beside the inventory).
+{"id": "settle", "command": "wait", "args": {"ticks": 300}, "expect": {"ok": true}}
+{"id": "clear", "command": "server.command", "args": {"command": "clear @a"}, "expect": {"ok": true}}
+{"id": "face", "command": "server.command", "args": {"command": "execute as @a at @s run tp @s ~ ~ ~ 0 30"}, "expect": {"ok": true}}
+{"id": "place", "command": "server.command", "args": {"command": "execute as @a at @s run setblock ~ ~ ~2 backpacksrefined:backpack[facing=north]"}, "expect": {"ok": true}}
+{"id": "fill", "command": "server.command", "args": {"command": "execute as @a at @s run item replace block ~ ~ ~2 container.4 with minecraft:diamond 5"}, "expect": {"ok": true}}
+{"id": "synced", "command": "wait", "args": {"ticks": 20}, "expect": {"ok": true}}
+{"id": "use", "command": "client.key", "args": {"key": "use", "down": true}, "expect": {"ok": true}}
+{"id": "hold", "command": "wait", "args": {"ticks": 2}, "expect": {"ok": true}}
+{"id": "release", "command": "client.key", "args": {"key": "use", "down": false}, "expect": {"ok": true}}
+{"id": "opened", "command": "wait", "args": {"ticks": 10}, "expect": {"ok": true}}
+{"id": "chest", "command": "client.slots", "expect": {"ok": true, "result.menu": "net.minecraft.world.inventory.ChestMenu", "result.slots.0.item": "minecraft:diamond", "result.slots.0.count": 5}}
+{"id": "placed", "command": "client.capture", "args": {"name": "placed"}, "expect": {"ok": true}}
+{"id": "close", "command": "client.screen", "args": {"open": "none"}, "expect": {"ok": true}}
+{"id": "break", "command": "server.command", "args": {"command": "execute as @a at @s run setblock ~ ~ ~2 minecraft:air destroy"}, "expect": {"ok": true}}
+{"id": "fetch", "command": "server.command", "args": {"command": "execute as @a at @s run tp @e[type=item] @s"}, "expect": {"ok": true}}
+{"id": "pickedUp", "command": "wait", "args": {"ticks": 30}, "expect": {"ok": true}}
+{"id": "lookUp", "command": "server.command", "args": {"command": "execute as @a at @s run tp @s ~ ~ ~ 0 -90"}, "expect": {"ok": true}}
+{"id": "wear", "command": "client.key", "args": {"key": "use", "down": true}, "expect": {"ok": true}}
+{"id": "wearHold", "command": "wait", "args": {"ticks": 2}, "expect": {"ok": true}}
+{"id": "wearRelease", "command": "client.key", "args": {"key": "use", "down": false}, "expect": {"ok": true}}
+{"id": "worn", "command": "wait", "args": {"ticks": 10}, "expect": {"ok": true}}
+{"id": "wearing", "command": "client.state", "expect": {"ok": true, "result.chest.item": "backpacksrefined:backpack"}}
+{"id": "inventory", "command": "client.screen", "args": {"open": "inventory"}, "expect": {"ok": true}}
+{"id": "loaded", "command": "wait", "args": {"ticks": 10}, "expect": {"ok": true}}
+{"id": "panel", "command": "client.capture", "args": {"name": "panel"}, "expect": {"ok": true}}
+{"id": "take", "command": "client.click", "args": {"x": -142, "y": 16}, "expect": {"ok": true, "result.taken": true}}
+{"id": "taken", "command": "wait", "args": {"ticks": 5}, "expect": {"ok": true}}
+{"id": "carrying", "command": "client.slots", "expect": {"ok": true, "result.carried.item": "minecraft:diamond", "result.carried.count": 5}}
+{"id": "drop", "command": "client.click", "args": {"x": -72, "y": 9}, "expect": {"ok": true}}
+{"id": "dropped", "command": "wait", "args": {"ticks": 5}, "expect": {"ok": true}}
+{"id": "inInventory", "command": "client.slots", "expect": {"ok": true, "result.carried.item": "minecraft:air", "result.slots.1.item": "minecraft:diamond", "result.slots.1.count": 5}}
+{"id": "after", "command": "client.capture", "args": {"name": "panelAfter"}, "expect": {"ok": true}}
+{"id": "pickAgain", "command": "client.click", "args": {"x": -72, "y": 9}, "expect": {"ok": true}}
+{"id": "putBack", "command": "client.click", "args": {"x": -142, "y": -47}, "expect": {"ok": true, "result.taken": true}}
+{"id": "putBackWait", "command": "wait", "args": {"ticks": 5}, "expect": {"ok": true}}
+{"id": "half", "command": "client.click", "args": {"x": -142, "y": -47, "button": 1}, "expect": {"ok": true, "result.taken": true}}
+{"id": "halfWait", "command": "wait", "args": {"ticks": 5}, "expect": {"ok": true}}
+{"id": "halfCarried", "command": "client.slots", "expect": {"ok": true, "result.carried.item": "minecraft:diamond", "result.carried.count": 3}}
+{"id": "halfShot", "command": "client.capture", "args": {"name": "panelHalf"}, "expect": {"ok": true}}

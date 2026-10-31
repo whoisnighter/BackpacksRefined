@@ -9,6 +9,10 @@ compiled into `main` and only reached from the client (see the root `AGENTS.md`)
 | `BackpackRendering` | The worn backpack's model layer, texture and shape (`createWornLayer`), the same on every version |
 | `platform/BackpackWornModel` | A humanoid model with every part hidden but the backpack hung on its body |
 | `platform/BackpackWornLayer` | The render layer that draws it, and `create(renderer, models)`, which makes one for a renderer with a humanoid model |
+| `panel/BackpackPanel` | The worn backpack's panel: layout, drawing, clicks, and what the server last sent |
+| `platform/PanelGraphics` | What the panel draws with, where the GUI's method names differ |
+| `platform/ClientNetwork` | Not here: one copy per loader under `src/client/<loader>`, sending to the server |
+| `mixin/AbstractContainerScreenMixin` | Hangs the panel on every container screen. Listed in `backpacksrefined.client.mixins.json` |
 | `mixin/CapeLayerMixin` | Skips a player's cape while they wear a backpack. Listed in `backpacksrefined.client.mixins.json` |
 
 ## Drawing the worn backpack
@@ -38,6 +42,22 @@ the layer silently draws nothing.
 1.21.9 in `submit`, reading `AvatarRenderState.chestEquipment`; before, in `render`, reading the
 player's chest slot. A dev account has no cape, so the agent client cannot show it; a boot only proves
 the mixin found its target (`injectors.defaultRequire` is 1, so a missing target fails the load).
+
+## The panel
+
+`BackpackPanel` draws the worn backpack's slots beside any container screen but the creative one, in
+vanilla's look drawn with plain fills (no texture, so no blit API to differ between versions). The
+mixin calls it from the screen's `init`, `removed`, drawing and mouse methods:
+
+- **Drawing** comes after the screen's contents and before the carried stack: at the end of
+  `extractContents` (26.x) or `renderContents` (1.21.6 to 1.21.11), where the carried stack is drawn
+  after, in a later layer; before 1.21.6 at the end of `render`, where the carried stack sits further
+  forward. The tooltip is set for the end of the frame from 1.21.6, drawn at once before.
+- **The mouse**: a press, release or drag over the panel is taken before the screen sees it, so it never
+  counts as a click outside and drops the carried stack. Alt and a press on a filled menu slot stores
+  it. The button numbers are the game's own (`InputConstants`): 26.3 moved to SDL, where left is 1.
+- **Sync**: while the screen is open, the panel asks the server for the contents once a backpack is
+  worn and drops them once it is not, checked every frame against the chest slot.
 
 ## Registering, per loader
 

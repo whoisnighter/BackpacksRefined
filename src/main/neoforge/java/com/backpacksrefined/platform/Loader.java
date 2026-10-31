@@ -1,10 +1,19 @@
 package com.backpacksrefined.platform;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.FMLPaths;
 
 import java.nio.file.Path;
+import java.util.function.BiFunction;
+//? if >=1.21.2 {
+import java.util.Set;
+//?}
 
 /**
  * Every call into the mod loader, for NeoForge. Each loader has its own copy of this class, with the
@@ -34,5 +43,15 @@ public final class Loader {
 
     public static boolean isModLoaded(String modId) {
         return ModList.get().isLoaded(modId);
+    }
+
+    /** A block entity type for {@code block}: NeoForge opens the constructor that replaced the builder in 1.21.2. */
+    public static <T extends BlockEntity> BlockEntityType<T> blockEntityType(BiFunction<BlockPos, BlockState, T> factory,
+            Block block) {
+        //? if >=1.21.2 {
+        return new BlockEntityType<>(factory::apply, Set.of(block));
+        //?} else {
+        /*return BlockEntityType.Builder.of(factory::apply, block).build(null);
+        *///?}
     }
 }

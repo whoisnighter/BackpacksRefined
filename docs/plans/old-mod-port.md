@@ -17,11 +17,14 @@ Holding items and tiers have their own plan: [backpack-panel.md](backpack-panel.
   drawn with a humanoid model. It bends and turns with the body. A player's cape is hidden while they
   wear one (`CapeLayerMixin`), as in the old mod.
 - **Placed as a block.** Using it on a block sets it down, facing the player who placed it. Its shape is
-  smaller than a full block; breaking it drops the backpack. Nothing happens when it is used.
+  smaller than a full block; breaking it drops the backpack, its items still in it.
 - **Floating and waterlogging.** A placed backpack can stand in water. Over a water source, and not in
   water itself, it floats: it sits 3 pixels lower, half in the water, and its shape is 8 pixels tall.
   It changes as the water under it comes and goes. It does not bob yet (see the animations below).
 - **Recipe.** Eight leather around a chest.
+- **Holding items.** 27 slots, not the old mod's way: worn, in a panel beside the inventory and every
+  container screen; placed, a right click opens them as a chest. See
+  [backpack-panel.md](backpack-panel.md), which has what is left (tiers, accessory slots, ...).
 
 Tested in game on 26.3-fabric only (`tools/agent/gameplay/wear.jsonl`, `tools/agent/gameplay/water.jsonl`,
 and by hand: placing, breaking, the recipe, the worn model on an armor stand, a mannequin and a husk).
@@ -45,9 +48,6 @@ rewritten data files), so they are the ones to run next.
 
 ## Still to bring over
 
-- **Holding items.** Not the old mod's way (a shulker box menu, contents on the item and the block
-  entity): [backpack-panel.md](backpack-panel.md) replaces it. Still open there: what a placed backpack
-  does with its contents, and whether it can be opened at all.
 - **A dropped full backpack places itself.** The old `ItemEntityMixin` turned a dropped backpack with
   items into a placed block where it landed, so it never despawned.
 - **The block's animations.** The lid opening, a bounce when placed, bobbing while floating (it floats
