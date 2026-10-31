@@ -1,7 +1,13 @@
 package com.backpacksrefined.dev.platform;
 
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.common.NeoForge;
+
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * The client half of {@link DevLoader}, for NeoForge. Loaded only from the dev tools' client
@@ -23,5 +29,11 @@ public final class DevClientLoader {
      * agent sees anyway when a client is killed.
      */
     public static void onClientStopping(Runnable handler) {
+    }
+
+    /** Runs after any screen is set up, with a way to add a button to it. */
+    public static void afterScreenInit(BiConsumer<Screen, Consumer<Button>> handler) {
+        NeoForge.EVENT_BUS.addListener((ScreenEvent.Init.Post event) ->
+                handler.accept(event.getScreen(), event::addListener));
     }
 }

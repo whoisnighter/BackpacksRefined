@@ -4,6 +4,7 @@ import com.backpacksrefined.dev.agent.backpacks.ClientWindow;
 import com.backpacksrefined.dev.agent.backpacks.Recorder;
 import com.backpacksrefined.dev.agent.backpacks.BackpacksAgent;
 import com.backpacksrefined.dev.platform.DevClientLoader;
+import com.backpacksrefined.dev.world.TestWorld;
 import net.minecraft.client.Minecraft;
 
 /**
@@ -44,7 +45,10 @@ public final class BackpacksDevClient {
             // Before the queue too, which waits while a recording's frame is due. See Recorder.
             if (Recorder.clientTick(Minecraft.getInstance())) BackpacksAgent.tick();
             ClientWindow.showStatus(Minecraft.getInstance(), BackpacksAgent.status(), ++ticks);
+            TestWorld.tick(Minecraft.getInstance());
         });
+        // The "Test world" button on the world list, for opening a fresh test world by hand.
+        DevClientLoader.afterScreenInit(TestWorld::addButton);
         DevClientLoader.onClientStopping(BackpacksAgent::flush);
     }
 }

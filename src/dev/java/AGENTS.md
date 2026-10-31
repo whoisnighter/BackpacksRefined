@@ -6,9 +6,16 @@ Tools for working on the mod that must never ship. This is its own source set an
 so none of it can reach a published jar. Every run task loads it: `runClient` and `runServer`
 everywhere, and `runManualA` and `runManualB` on NeoForge and Forge.
 
-One tool lives here: the agent client, for driving a real client and reading numbers out of it. It
-documents itself in [agent/AGENTS.md](com/backpacksrefined/dev/agent/AGENTS.md); `tools/agent/` holds
-what is sent to it from outside the game.
+Two tools live here. The agent client, for driving a real client and reading numbers out of it, documents
+itself in [agent/AGENTS.md](com/backpacksrefined/dev/agent/AGENTS.md); `tools/agent/` holds what is sent
+to it from outside the game.
+
+The other is the **Test world** button, top right of the main menu and of the world list on every
+client run (`world/`). One press makes a fresh world and opens it, for testing by hand: the sky floor `tools/agent/new_world.py`
+makes (one layer of stone at y 199 in plains, nothing below), creative with cheats, and once the player
+is in it a frozen clear noon with nothing spawning. Each press makes it anew under the name `Test World`;
+the old one is deleted only if it holds the `.agent-world` mark this button and `new_world.py` leave, so
+a world of that name made by hand is kept and the new one takes `Test World 2`.
 
 | In the source set | What it is |
 |---|---|
@@ -43,7 +50,8 @@ nothing inside the game can see.
   here fails the NeoForge and Forge nodes.
 - `agent/core` knows nothing of Minecraft, of a loader or of the mod; `checkAgentCore` enforces it.
 - Everything here compiles on every supported version. A vanilla call that differs between versions
-  goes behind `AgentVanilla` (server) or `AgentClientVanilla` (client), never a `//?` at the call site.
+  goes behind `AgentVanilla` (server) or `AgentClientVanilla` (client), or `TestWorldVanilla` for the
+  button, never a `//?` at the call site.
 - No change to the mod for a tool's sake. Where a tool cannot reach something, read it from this
   source set instead, rather than widening an API surface players never get.
 - CI only compiles this source set; it runs no tool.
