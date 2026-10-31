@@ -7,6 +7,7 @@ import com.backpacksrefined.dev.agent.core.AgentDispatcher;
 import com.backpacksrefined.dev.agent.core.AgentException;
 import com.backpacksrefined.dev.agent.core.AgentReply;
 import com.backpacksrefined.dev.agent.core.AgentRequest;
+import com.backpacksrefined.dev.world.TestWorld;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -480,6 +481,15 @@ final class ClientProbes {
             /*minecraft.level.disconnect();
             minecraft.clearLevel(new TitleScreen());
             *///?}
+        });
+
+        dispatcher.register("client.testWorld", (request, reply) -> {
+            Minecraft minecraft = client();
+            if (minecraft.level != null) {
+                throw new AgentException("client.testWorld: a world is already loaded; disconnect first");
+            }
+            reply.ok();
+            TestWorld.create(AgentClientVanilla.screen(minecraft));
         });
 
         dispatcher.register("client.connect", (request, reply) -> {

@@ -21,6 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       nodes: ${{ steps.read.outputs.nodes }}
+      gametest: ${{ steps.read.outputs.gametest }}
     steps:
       - uses: actions/checkout@v7
       - name: Read nodes from stonecutter.properties.toml
@@ -70,6 +71,21 @@ jobs:
 
       - name: Build
         run: ./gradlew ":${{ matrix.node }}:buildAndCollect" ":${{ matrix.node }}:check" --stacktrace
+
+      # A headless server runs every game test (src/gametest) in a fresh world, in about a minute with
+      # the build already done, and fails the job when one fails. Only on the nodes that have them.
+      - name: Game tests
+        id: gametest
+        if: contains(fromJSON(needs.discover.outputs.gametest), matrix.node)
+        run: ./gradlew ":${{ matrix.node }}:runGameTest" --stacktrace
+
+      - name: Upload the game test report
+        if: always() && steps.gametest.outcome != 'skipped'
+        uses: actions/upload-artifact@v7
+        with:
+          name: gametest-${{ matrix.node }}
+          path: versions/${{ matrix.node }}/build/gametest/report.xml
+          if-no-files-found: ignore
 
       - uses: actions/upload-artifact@v7
         with:

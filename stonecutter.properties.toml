@@ -50,6 +50,8 @@ mod.mc_releases = "26.3"
 
 [fabric."26.3"]
 mod.mc_compat = "~26.3"
+# Whether the node has the game tests (src/gametest): `runGameTest` exists, and CI runs it.
+test.gametest = true
 deps.fabric_api = "0.165.0+26.3"
 deps.modmenu = "21.0.0"
 deps.cloth_config = "26.3.159+fabric"

@@ -89,7 +89,11 @@ public final class TestWorld {
         }
     }
 
-    private static void create(Screen parent) {
+    /**
+     * Makes the world and opens it, as a press of the button does: the agent's {@code client.testWorld},
+     * for a run with no world to start from (CI).
+     */
+    public static void create(Screen parent) {
         Minecraft minecraft = Minecraft.getInstance();
         Path saves = minecraft.getLevelSource().getBaseDir();
         String name = NAME;

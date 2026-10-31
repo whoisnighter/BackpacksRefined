@@ -57,6 +57,7 @@ src/client/java/          loader independent client code: drawing the worn backp
                           (src/client/java/com/backpacksrefined/client/AGENTS.md)
 src/client/<loader>/      the loader's client entrypoint and its client registrations
 src/dev/                  the agent client, a dev-only mod in no published jar (src/dev/java/AGENTS.md)
+src/gametest/             the game tests, a test-only mod in no published jar (src/gametest/AGENTS.md)
 src/watchdog/             a -javaagent that stops an unattended NeoForge/Forge run FML failed to load
 tools/agent/              what is sent to the agent from outside the game (tools/agent/AGENTS.md)
 ```
@@ -78,11 +79,26 @@ tools/agent/              what is sent to the agent from outside the game (tools
 
 `./gradlew :<node>:check` runs, besides compiling:
 
-- `checkLoaderSeam`: no loader API in `src/main/java` or `src/client/java`.
+- `checkLoaderSeam`: no loader API in `src/main/java`, `src/client/java` or `src/gametest/java`.
 - `checkVersionSeam`: no `//?` outside `platform/` and `mixin/`.
 - `checkLang`: every lang file has exactly the keys `en_us.json` has.
 - `checkAgentCore`: the agent's `dev/agent/core` imports no Minecraft, loader or mod class.
 - `devClasses`: the agent client compiles on the node, though nothing ships it.
+- `gametestClasses`, on a node with game tests: they compile.
+
+## Testing
+
+Two kinds, split by what they can see:
+
+- **Game tests** (`src/gametest/`, `./gradlew :<node>:runGameTest`): what the server holds, on a
+  headless server, in seconds, pass or fail. CI runs them on every push (`build.yml`), on each node
+  whose table sets `test.gametest`. See [src/gametest/AGENTS.md](src/gametest/AGENTS.md).
+- **The agent client** (below): what only a real client shows, the screens, the layout, the
+  animations, the models. CI runs `tools/agent/gameplay/` in `agent.yml`, on a virtual display with
+  software drawing, when the client sources, the assets, the mixins or the agent change, on a release
+  tag, and by hand; the captures are the run's artifact.
+
+A check that can be a game test is one; a script keeps what it alone can see.
 
 ## Running the game for a check
 

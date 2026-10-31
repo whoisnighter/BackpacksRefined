@@ -1,0 +1,114 @@
+name: Agent client
+
+# The agent client's gameplay scripts (tools/agent/gameplay) in a real client: what the game tests in
+# build.yml cannot see, the screens, the panel's layout, the lid and the models. A runner has no GPU,
+# so the client draws with the CPU (Mesa's llvmpipe) on a virtual display (Xvfb): slow, but enough to
+# run a script and capture what it shows.
+#
+# Heavier than a build, so it runs only when what a client shows may have changed (the client sources,
+# the assets, the mixins, the agent itself), on a release tag, and by hand. Each node runs every script
+# through .github/scripts/run_agent.py and uploads the captures and logs. It does not block anything
+# yet (continue-on-error): software drawing is new here, and a flaky run should not hide a good build.
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+    paths:
+      - "src/client/**"
+      - "src/main/resources/assets/**"
+      - "src/main/java/com/backpacksrefined/mixin/**"
+      - "src/dev/**"
+      - "tools/agent/**"
+      - ".github/scripts/run_agent.py"
+      - ".github/workflows/agent.yml"
+  pull_request:
+    paths:
+      - "src/client/**"
+      - "src/main/resources/assets/**"
+      - "src/main/java/com/backpacksrefined/mixin/**"
+      - "src/dev/**"
+      - "tools/agent/**"
+      - ".github/scripts/run_agent.py"
+      - ".github/workflows/agent.yml"
+  workflow_dispatch:
+    inputs:
+      nodes:
+        description: "Nodes, as a JSON list"
+        default: '["26.3-fabric", "1.21.1-neoforge", "1.20.1-forge"]'
+      scripts:
+        description: "Scripts, a glob under the repository root"
+        default: "tools/agent/gameplay/*.jsonl"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: agent-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  agent:
+    name: Agent ${{ matrix.node }}
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        # The newest node and the two oldest, which take the other code paths; the rest by hand.
+        node: ${{ fromJSON(inputs.nodes || '["26.3-fabric", "1.21.1-neoforge", "1.20.1-forge"]') }}
+    env:
+      # Mesa's software renderer, whatever GL the runner reports.
+      LIBGL_ALWAYS_SOFTWARE: "1"
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: |
+            17
+            21
+            25
+
+      - uses: gradle/actions/setup-gradle@v5
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+
+      - name: Configure Gradle for one node
+        run: |
+          mkdir -p ~/.gradle
+          echo "org.gradle.java.installations.fromEnv=JAVA_HOME_17_X64,JAVA_HOME_21_X64,JAVA_HOME_25_X64" >> ~/.gradle/gradle.properties
+          echo "org.gradle.configureondemand=true" >> ~/.gradle/gradle.properties
+
+      - name: Install a virtual display and software GL
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q xvfb libgl1-mesa-dri libglx-mesa0 mesa-utils
+          xvfb-run -a -s "-screen 0 1280x720x24" glxinfo -B | grep -E "OpenGL (renderer|core profile version)"
+
+      - name: Build the client
+        run: ./gradlew ":${{ matrix.node }}:classes" ":${{ matrix.node }}:devClasses" --stacktrace
+
+      - name: Run the scripts
+        env:
+          NODE: ${{ matrix.node }}
+          SCRIPTS: ${{ inputs.scripts || 'tools/agent/gameplay/*.jsonl' }}
+        # $SCRIPTS unquoted, so the shell expands the glob.
+        run: |
+          xvfb-run -a -s "-screen 0 1280x720x24" \
+            python .github/scripts/run_agent.py "$NODE" $SCRIPTS \
+              --summary "$GITHUB_STEP_SUMMARY" --captures build/agent-ci
+
+      - name: Upload the captures and logs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: agent-${{ matrix.node }}
+          path: |
+            build/agent-ci/
+            run/${{ matrix.node }}/crash-reports/
+          if-no-files-found: ignore

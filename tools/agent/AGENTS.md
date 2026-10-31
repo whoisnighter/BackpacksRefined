@@ -38,6 +38,7 @@ world it needs and how to read the result; read it before running one.
 | `make_gif.py` | Turns a `client.record` folder into a GIF or WebP, drawing the virtual pointer as a cursor. Options in its docstring |
 | `new_world.py`, `nbt.py` | Makes the throwaway world a script runs in. See [A world for a script](#a-world-for-a-script) |
 | `clean.py` | Deletes the worlds and captures a run left behind and the next run makes again. See [Cleaning up](#cleaning-up) |
+| `ci/` | `test-world.jsonl`: makes a node's first world through `client.testWorld`, for a run directory with none (CI), so `new_world.py` has one to take its settings from |
 | `smoke/` | Checks with no gameplay: `boot.jsonl` (a client comes up and its queue answers) and `server-probe.jsonl` (a dedicated server's queue answers with nobody online) |
 | `gameplay/` | The mod's own features: `wear.jsonl` (a right click wears a backpack and swaps it with a chestplate, both ways), `water.jsonl` (floating and waterlogging, the creative tab), `storage.jsonl` (a placed backpack's screen, breaking and wearing it, the panel's clicks), `tiers.jsonl` (each tier opens its own slots of the panel, the rest are locked) |
 
@@ -110,6 +111,24 @@ for a sweep of every node, or name the nodes. `--screenshots` adds the queues' `
 | Any world without `.agent-world` | `new_world.py` copies its seed and spawn point, so deleting the last one of a node stops every `--terrain` script there |
 | The queue's `in.jsonl`, `out.jsonl`, `previous-*` | Small, and the only record of what the last run did |
 | A world a person is testing in | Ask before deleting a world you did not make in this session |
+
+## In CI
+
+`.github/workflows/agent.yml` runs `tools/agent/gameplay/*.jsonl` on `26.3-fabric`, `1.21.1-neoforge`
+and `1.20.1-forge`, on a virtual display (Xvfb) with Mesa's software renderer, through
+`.github/scripts/run_agent.py`. That script does for each file what its header tells a person to do:
+the `new_world.py` line for the `-Pquickplay` world, a `printf '<json>' > run/<node>/config/<file>`
+line (written, then put back), the run, the DONE line and `--verify`. So a new script runs in CI with
+nothing more than a header in that shape. It runs on a push that touches the client sources, the
+assets, the mixins or the agent, on a release tag, and by hand (Actions, Agent client, Run workflow,
+with other nodes or another glob). The job summary has a table of the results, and the artifact
+`agent-<node>` the captures (one folder a script) and each run's logs. It does not fail the build yet.
+
+The same runs locally, without the virtual display:
+
+```bash
+python .github/scripts/run_agent.py 26.3-fabric tools/agent/gameplay/water.jsonl
+```
 
 ## Adding a script
 

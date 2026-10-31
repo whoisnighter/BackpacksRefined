@@ -58,7 +58,7 @@ loom {
     }
 
     val gradleProperty = { name: String -> providers.gradleProperty(name).orNull }
-    runConfigs.all {
+    runConfigs.matching { it.name != "gameTest" }.all {
         // One run directory per node, outside versions/, so `clean` never deletes a dev world.
         runDirectory = rootProject.file("run/${project.name}")
         jvmArguments.addAll(devJvmArguments)
@@ -102,6 +102,43 @@ loom {
             sourceSet = devClient.name
         }
     }
+}
+
+// The game tests (src/gametest), on the nodes whose table sets `test.gametest`: their own small mod,
+// in no published jar, that `runGameTest` loads into a headless server. It runs every test, writes
+// build/gametest/report.xml and fails when one does. `check` compiles them.
+if (findProperty("test.gametest")?.toString() == "true") {
+    val gametest: SourceSet = sourceSets.create("gametest") {
+        java.srcDir("src/gametest/${loader.id}/java")
+        resources.srcDir("src/gametest/${loader.id}/resources")
+        compileClasspath += sourceSets.main.get().compileClasspath + sourceSets.main.get().output
+        runtimeClasspath += sourceSets.main.get().runtimeClasspath + sourceSets.main.get().output
+    }
+    loom {
+        mods {
+            register("backpacksrefined_gametest") {
+                sourceSet(gametest)
+            }
+        }
+        runs {
+            register("gameTest") {
+                server()
+                displayName = "Game Test"
+                sourceSet = gametest.name
+                // A fresh world every run: the tests build their own structures and leave nothing worth keeping.
+                runDirectory = layout.buildDirectory.dir("gametest")
+                jvmArguments.addAll(devJvmArguments)
+                systemProperties.put("fabric-api.gametest", "true")
+                systemProperties.put("fabric-api.gametest.report-file",
+                    layout.buildDirectory.file("gametest/report.xml").get().asFile.absolutePath)
+                generateRunConfig = false
+            }
+        }
+    }
+    tasks.named("runGameTest") {
+        doFirst { layout.buildDirectory.dir("gametest/world").get().asFile.deleteRecursively() }
+    }
+    tasks.named("check") { dependsOn("gametestClasses") }
 }
 
 // `mod*` configurations exist on obfuscated versions only; on 26.x the plain one is the same thing.

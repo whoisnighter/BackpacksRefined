@@ -44,13 +44,13 @@ tasks.withType<Jar>().configureEach {
     from(rootProject.file("licenses")) { into("licenses/$modId") }
 }
 
-// The loader seam: code under src/main/java and src/client/java compiles on every loader, so it never
-// imports a loader's API. It would compile on the active node and break on the others; this catches it
-// on any node.
+// The loader seam: code under src/main/java, src/client/java and src/gametest/java compiles on every
+// loader, so it never imports a loader's API. It would compile on the active node and break on the
+// others; this catches it on any node.
 tasks.register("checkLoaderSeam") {
     group = "verification"
     description = "Fails when loader independent sources import a mod loader's API"
-    val roots = listOf("src/main/java", "src/client/java").map(rootProject::file).filter(File::isDirectory)
+    val roots = listOf("src/main/java", "src/client/java", "src/gametest/java").map(rootProject::file).filter(File::isDirectory)
     val forbidden = Regex("""\b(net\.fabricmc|net\.neoforged|net\.minecraftforge)\.""")
     inputs.files(roots.map { fileTree(it) { include("**/*.java") } })
     doLast {

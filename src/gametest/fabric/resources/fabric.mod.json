@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "backpacksrefined_gametest",
+  "version": "1.0.0",
+  "name": "Backpacks Refined Game Tests",
+  "description": "The game tests of Backpacks Refined, run by runGameTest. Never published.",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-gametest": [
+      "com.backpacksrefined.gametest.fabric.BackpackGameTestsFabric"
+    ]
+  },
+  "depends": {
+    "backpacksrefined": "*",
+    "fabric-gametest-api-v1": "*"
+  }
+}

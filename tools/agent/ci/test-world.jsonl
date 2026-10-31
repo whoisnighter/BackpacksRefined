@@ -1,0 +1,15 @@
+// Makes the first world of a node that has none, for new_world.py to take its settings from: a fresh
+// run directory in CI, where no one has made a world by hand. The Test world button's sky floor, made
+// through the agent instead of a click, then left so the world is saved.
+//   ./gradlew ":<node>:runClient" -Pagent=tools/agent/ci/test-world.jsonl
+//   python tools/agent/drive.py run/<node>/agent/client tools/agent/ci/test-world.jsonl --verify --max-age 10
+// Any node. The world is run/<node>/saves/Test World; then `python tools/agent/new_world.py <node> <World>`
+// works as on a machine with a world made by hand. The waits are long because a CI runner draws
+// with the CPU and loads the world slowly.
+{"id": "probe", "command": "probe", "expect": {"ok": true, "result.side": "client"}}
+{"id": "settle", "command": "wait", "args": {"ticks": 100}, "expect": {"ok": true}}
+{"id": "make", "command": "client.testWorld", "expect": {"ok": true}}
+{"id": "load", "command": "wait", "args": {"ticks": 1200}, "expect": {"ok": true}}
+{"id": "in", "command": "client.state", "expect": {"ok": true, "result.dimension": "minecraft:overworld", "result.alive": true}}
+{"id": "leave", "command": "client.disconnect", "expect": {"ok": true}}
+{"id": "saved", "command": "wait", "args": {"ticks": 200}, "expect": {"ok": true}}

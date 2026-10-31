@@ -196,6 +196,7 @@ a client answers all three.
 | `client.respawn` | | after pressing the death screen's button through the connection |
 | `client.disconnect` | | after leaving to the title screen |
 | `client.connect` | `address` | after starting a connection; `wait` for it to finish |
+| `client.testWorld` | | after starting to make and open a fresh `Test World`, as the main menu's **Test world** button does; `wait` for it to load. For a run with no world yet, such as CI (`tools/agent/ci/test-world.jsonl`) |
 
 `/backpacks agent probe` in game says the same thing `probe` does, for the moment before an agent is
 wired up at all. It needs permission level 4.
