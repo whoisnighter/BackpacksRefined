@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " I ",
+    "IBI",
+    " I "
+  ],
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "B": "backpacksrefined:backpack"
+  },
+  "result": {
+    "id": "backpacksrefined:iron_backpack",
+    "count": 1
+  }
+}

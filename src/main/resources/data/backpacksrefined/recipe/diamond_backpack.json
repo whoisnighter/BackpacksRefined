@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " D ",
+    "DBD",
+    " D "
+  ],
+  "key": {
+    "D": "minecraft:diamond",
+    "B": "backpacksrefined:backpack"
+  },
+  "result": {
+    "id": "backpacksrefined:diamond_backpack",
+    "count": 1
+  }
+}

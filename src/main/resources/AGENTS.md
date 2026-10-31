@@ -14,12 +14,13 @@ assets/backpacksrefined/
   textures/item/backpack.png      16x16 sprite
   textures/block/backpack.png     64x64, the old mod's textures/entity/backpack.png
   textures/entity/backpack.png    64x64, the worn model; the old mod's textures/model/backpack.png
-  ...iron_, diamond_, netherite_backpack  the same files again for each upper tier, the models a child
-                                  of the leather ones with their own textures (copies of leather's for now)
+  ...copper_, iron_, gold_, diamond_, netherite_backpack  the same files again for each upper tier, the
+                                  models a child of the leather ones with their own textures (leather with
+                                  metal trim, from tools/scripts/tiers/draw_tiers.py)
   sounds.json                     what each of the mod's sound events plays
   lang/                           en_us.json holds every key; checkLang holds the others to it
 data/backpacksrefined/
-  recipe/backpack.json
+  recipe/backpack.json            and copper_, iron_, gold_, diamond_ (shaped, around a backpack), netherite_ (smithing)
   loot_table/blocks/backpack.json
 ```
 
@@ -31,11 +32,11 @@ Like the sources, a data file is written for 26.3, and `processResources` rewrit
 | Before | Rewrite |
 |---|---|
 | 1.21 | `recipe/` and `loot_table/` become `recipes/` and `loot_tables/` |
-| 1.21.2 | a recipe ingredient `"L": "minecraft:leather"` becomes `{"item": ...}`, `"#tag"` becomes `{"tag": ...}` |
+| 1.21.2 | a recipe ingredient `"L": "minecraft:leather"` becomes `{"item": ...}`, `"#tag"` becomes `{"tag": ...}`; so do a smithing recipe's `template`, `base` and `addition` |
 | 1.20.5 | a recipe result's `"id"` becomes `"item"` |
 
 The ingredient rewrite works line by line and only on one-character keys, the keys a shaped recipe's
-`key` has, so keep one ingredient a line. A format change it does not cover gets a rule there, not a
+`key` has, and on a smithing recipe's three, so keep one ingredient a line. A format change it does not cover gets a rule there, not a
 copy of the file per version. Check the result in `versions/<node>/build/resources/main/data`.
 
 ## The flat icon

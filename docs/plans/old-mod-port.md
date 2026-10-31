@@ -21,8 +21,8 @@ Holding items and tiers have their own plan: [backpack-panel.md](backpack-panel.
 - **Floating and waterlogging.** A placed backpack can stand in water. Over a water source, and not in
   water itself, it floats: it sits 3 pixels lower, half in the water, and its shape is 8 pixels tall.
   It changes as the water under it comes and goes. It does not bob yet (see the animations below).
-- **Recipe.** Eight leather around a chest.
-- **Holding items.** 8 to 32 slots by tier (leather, iron, diamond, netherite; creative only for now), not the old mod's way: worn, in a panel beside the inventory and every
+- **Recipe.** Four leather around a chest (the old mod had eight). The upper tiers are crafted from it, see [backpack-panel.md](backpack-panel.md).
+- **Holding items.** 8 to 32 slots by tier (leather, copper, iron, gold, diamond, netherite), not the old mod's way: worn, in a panel beside the inventory and every
   container screen; placed, a right click opens them as a chest. See
   [backpack-panel.md](backpack-panel.md), which has what is left (tiers, accessory slots, ...).
 
@@ -60,7 +60,7 @@ rewritten data files), so they are the ones to run next.
 ### Sounds
 
 - **Equip:** vanilla leather armor (`item.armor.equip_leather`) on every node, for every backpack.
-- **Tiers:** the upgraded tiers in [backpack-panel.md](backpack-panel.md#tiers) (iron and up) equip with
+- **Tiers:** the upgraded tiers in [backpack-panel.md](backpack-panel.md#tiers) (copper and up) equip with
   plain wolf armor (`item.armor.equip_wolf`, no pitch change). 1.20.1 has no wolf armor sound, so it
   needs a fallback there.
 - **Place:** the bundle insert sound at pitch 0.1, as the old mod had it.

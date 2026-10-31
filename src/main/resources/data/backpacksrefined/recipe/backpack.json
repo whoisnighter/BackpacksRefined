@@ -2,9 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "pattern": [
-    "LLL",
+    " L ",
     "LCL",
-    "LLL"
+    " L "
   ],
   "key": {
     "L": "minecraft:leather",

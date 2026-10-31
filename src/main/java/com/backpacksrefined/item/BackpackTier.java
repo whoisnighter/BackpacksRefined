@@ -4,12 +4,15 @@ import com.backpacksrefined.BackpacksRefined;
 import net.minecraft.resources.Identifier;
 
 /**
- * A backpack's tier: each is its own item and block, two rows of four slots more than the one before.
+ * A backpack's tier: each is its own item and block, a row of four slots more than the one before, but
+ * netherite, two rows more than diamond.
  * The panel always shows the largest tier's slots, and those past the worn backpack's are locked.
  */
 public enum BackpackTier {
     LEATHER("backpack", 8, false),
+    COPPER("copper_backpack", 12, false),
     IRON("iron_backpack", 16, false),
+    GOLD("gold_backpack", 20, false),
     DIAMOND("diamond_backpack", 24, false),
     NETHERITE("netherite_backpack", 32, true);
 

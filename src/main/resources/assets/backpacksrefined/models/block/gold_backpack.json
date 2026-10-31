@@ -1,0 +1,7 @@
+{
+  "parent": "backpacksrefined:block/backpack",
+  "textures": {
+    "backpack": "backpacksrefined:block/gold_backpack",
+    "particle": "backpacksrefined:block/gold_backpack"
+  }
+}

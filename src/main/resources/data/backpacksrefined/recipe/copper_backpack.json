@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " C ",
+    "CBC",
+    " C "
+  ],
+  "key": {
+    "C": "minecraft:copper_ingot",
+    "B": "backpacksrefined:backpack"
+  },
+  "result": {
+    "id": "backpacksrefined:copper_backpack",
+    "count": 1
+  }
+}

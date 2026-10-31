@@ -1,7 +1,9 @@
 {
   "itemGroup.backpacksrefined": "Backpacks Refined",
   "block.backpacksrefined.backpack": "Ba lô",
+  "block.backpacksrefined.copper_backpack": "Ba lô đồng",
   "block.backpacksrefined.iron_backpack": "Ba lô sắt",
+  "block.backpacksrefined.gold_backpack": "Ba lô vàng",
   "block.backpacksrefined.diamond_backpack": "Ba lô kim cương",
   "block.backpacksrefined.netherite_backpack": "Ba lô netherite",
   "container.backpacksrefined.backpack": "Ba lô",

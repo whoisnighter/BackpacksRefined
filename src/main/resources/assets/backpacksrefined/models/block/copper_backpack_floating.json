@@ -1,0 +1,7 @@
+{
+  "parent": "backpacksrefined:block/backpack_floating",
+  "textures": {
+    "backpack": "backpacksrefined:block/copper_backpack",
+    "particle": "backpacksrefined:block/copper_backpack"
+  }
+}

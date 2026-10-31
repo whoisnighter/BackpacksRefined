@@ -15,10 +15,15 @@ Done, on every node (compiled and `check`ed on all; played on 26.3-fabric only,
 - **Storage.** `storage/BackpackStorage` and `BackpackContents`, saved by `platform/BackpackSavedData`.
   The id is in the item's custom data (`platform/BackpackIds`), not a component of the mod's own: no
   registry entry on three loaders, and the creative screen keeps it.
-- **Four tiers**, each its own item and block (`item/BackpackTier`): backpack 8, iron 16, diamond 24,
-  netherite 32 (fire and lava resistant). Only in the creative tabs and `/give` for now: no recipe or
-  upgrade yet. The new tiers' textures are copies of the leather ones, to be replaced. All equip with
+- **Six tiers**, each its own item and block (`item/BackpackTier`): backpack 8, copper 12, iron 16,
+  gold 20, diamond 24, netherite 32 (fire and lava resistant). The textures are the leather ones with
+  metal trim, drawn by `tools/scripts/tiers/draw_tiers.py`. All equip with
   the leather sound for now.
+- **Getting the tiers.** The backpack is four leather around a chest. Copper, iron, gold and diamond are
+  four of their ingots (or diamonds) around a backpack, at the crafting table, all from the leather one; netherite is a diamond
+  backpack with a netherite upgrade template and an ingot at the smithing table. A crafted tier keeps
+  the backpack it was made from, id and all (`item/BackpackCrafting`, through
+  `mixin/ShapedRecipeMixin`); the smithing transform copies it by itself.
 - **A placed backpack opens with a right click**, as vanilla's chest with a row per nine slots (see
   [Placed backpacks](#placed-backpacks)).
 - **The panel** beside every container screen but the creative one, with left and right clicks, shift
@@ -39,7 +44,7 @@ Where it differs from what follows, the code is right and this plan was updated:
 - Changed slots are sent after each click, not gathered for the end of the tick, and there is no
   revision: each click answers at once with what changed, and a snapshot on opening covers the rest.
 
-Not done yet: a way to get the upper tiers (recipes or smithing upgrades), their own textures and equip sound, admin commands, Trinkets and Curios, JEI, EMI and REI
+Not done yet: their own textures and equip sound, admin commands, Trinkets and Curios, JEI, EMI and REI
 exclusion areas, the config (blocklist, side, toggle key), the dupe scripts under [Testing](#testing),
 and a creative player breaking a full placed backpack (it drops nothing, as for any block; the items
 stay in storage under its id).
@@ -134,14 +139,16 @@ Not tested in game, but every dupe of that shape needs two copies, and this desi
 
 ## Tiers
 
-Each tier is its own item and block (`item/BackpackTier`), two rows of four more than the one before,
-so the largest fills the panel's four columns at the inventory screen's height. Decided; there is no
-gold tier.
+Each tier is its own item and block (`item/BackpackTier`), a row of four more than the one before, and
+netherite two rows more than diamond, so the largest fills the panel's four columns at the inventory
+screen's height.
 
 | Tier | Slots | Notes |
 |------|-------|-------|
 | Backpack | 8 | leather |
+| Copper | 12 | |
 | Iron | 16 | |
+| Gold | 20 | |
 | Diamond | 24 | |
 | Netherite | 32 | fire and lava resistant, like netherite gear |
 
@@ -149,9 +156,9 @@ gold tier.
   from the tier. A placed backpack's block entity reads its size from its block.
 - The server opens only the worn tier's slots: if the stored contents are larger (a copy of the id
   that was a larger tier), the slots past it are left as they are and out of reach.
-- **Upgrades** happen at the smithing table, one tier at a time, with an upgrade template plus the
-  material. The smithing transform copies the item's components (its NBT tag on 1.20.1), so the UUID
-  and with it the contents carry over. The size grows on the next access.
+- **Upgrades**: copper, iron, gold and diamond are crafted around a leather backpack, netherite is a smithing upgrade of
+  diamond with vanilla's netherite template. Both copy the item's components (its NBT tag on 1.20.1),
+  so the UUID and with it the contents carry over. The size grows on the next access.
 - The panel always shows 32 slots; a smaller tier's missing slots are darkened and locked.
 
 ## Worn slots
@@ -319,5 +326,3 @@ Dupe scenarios to script, each expecting the total item count to stay unchanged:
 
 ## Open questions
 
-- Upgrade recipe costs: which template and how much material each tier takes.
-- How the upper tiers are got: crafted, or upgraded at the smithing table (with or without a template).

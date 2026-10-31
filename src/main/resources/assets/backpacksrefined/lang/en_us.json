@@ -1,7 +1,9 @@
 {
   "itemGroup.backpacksrefined": "Backpacks Refined",
   "block.backpacksrefined.backpack": "Backpack",
+  "block.backpacksrefined.copper_backpack": "Copper Backpack",
   "block.backpacksrefined.iron_backpack": "Iron Backpack",
+  "block.backpacksrefined.gold_backpack": "Gold Backpack",
   "block.backpacksrefined.diamond_backpack": "Diamond Backpack",
   "block.backpacksrefined.netherite_backpack": "Netherite Backpack",
   "container.backpacksrefined.backpack": "Backpack",

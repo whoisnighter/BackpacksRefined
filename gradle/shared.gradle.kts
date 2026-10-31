@@ -170,11 +170,12 @@ tasks.register<Copy>("buildAndCollect") {
 // an older one. Recipes and loot tables lived in plural folders before 1.21. A recipe's ingredients were
 // objects before 1.21.2 ({"item": ...}, {"tag": ...}) where they are now an id or #tag, and its result
 // named the item `item` before 1.20.5. Ingredients are found as single character keys, the only ones a
-// shaped recipe's `key` has, so a recipe keeps one ingredient a line.
+// shaped recipe's `key` has, and a smithing recipe's `template`, `base` and `addition`, so a recipe
+// keeps one ingredient a line.
 @Suppress("UNCHECKED_CAST")
 val atLeast = project.extensions.extraProperties.get("node.atLeast") as (String) -> Boolean
 tasks.named<ProcessResources>("processResources") {
-    val ingredient = Regex("""^(\s*"."\s*:\s*)"(#?)([^"]+)"(,?)\s*$""")
+    val ingredient = Regex("""^(\s*"(?:.|template|base|addition)"\s*:\s*)"(#?)([^"]+)"(,?)\s*$""")
     if (!atLeast("1.21.2")) filesMatching("data/*/recipe/*.json") {
         filter { line ->
             ingredient.matchEntire(line)?.let { match ->

@@ -8,13 +8,13 @@ outside `platform/` and `mixin/` has a version conditional (`checkVersionSeam`).
 | `BackpacksRefined` | The common entrypoint each loader's mod class calls, the mod id, `id(path)` |
 | `sound/` | `BackpacksSounds`: the sound events. What they play is in `assets/backpacksrefined/sounds.json` |
 | `block/` | `BackpacksBlocks` and `BackpacksBlockEntities` (the registries), `BackpackBlock`, the placed backpack, and `BackpackBlockEntity`, which keeps its id |
-| `item/` | `BackpacksItems` (the registry), `BackpackTier` (the four tiers and their sizes), `BackpackItem`, and `BackpacksCreativeTabs`, the mod's own tab |
+| `item/` | `BackpacksItems` (the registry), `BackpackTier` (the six tiers and their sizes), `BackpackItem`, and `BackpacksCreativeTabs`, the mod's own tab |
 | `storage/` | `BackpackStorage`: every backpack's items, by id, saved with the world; `BackpackContents`, one backpack's; `StorageSchema`, the saved layout's version and its migrations |
 | `menu/` | `BackpackMenu`: a placed backpack's menu, vanilla's chest menu with a row per nine slots |
 | `network/` | `BackpackNetwork`: the panel's messages, their channels, and where each is handled |
 | `panel/` | `PanelServer`: the server side of the worn backpack's panel |
 | `platform/` | Where versions differ, and the loader seam (`platform/AGENTS.md`) |
-| `mixin/` | Mixins, listed in `backpacksrefined.mixins.json`. None yet |
+| `mixin/` | Mixins, listed in `backpacksrefined.mixins.json`: `ShapedRecipeMixin` hands a shaped recipe's result to `item/BackpackCrafting`, so a backpack crafted from another keeps its contents |
 
 ## Registering
 
