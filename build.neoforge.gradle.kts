@@ -44,6 +44,7 @@ extra["node.clientSources"] =
     else layout.buildDirectory.dir("generated/stonecutter/client").get().asFile
 extra["node.devJvmArguments"] = devJvmArguments
 extra["node.requiredJava"] = java
+extra["node.atLeast"] = { minecraft: String -> sc.current.parsed >= minecraft }
 val gradleProperty = { name: String -> providers.gradleProperty(name).orNull }
 extra["node.agentSystemProperties"] = agentSystemProperties(gradleProperty, rootProject.projectDir)
 extra["node.quickplayArguments"] = quickplayArguments(gradleProperty)

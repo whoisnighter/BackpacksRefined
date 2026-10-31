@@ -2,10 +2,12 @@
 //   python tools/agent/new_world.py <node> BackpackAgent
 //   ./gradlew ":<node>:runClient" -Pagent=tools/agent/gameplay/wear.jsonl -Pquickplay=BackpackAgent
 //   python tools/agent/drive.py run/<node>/agent/client tools/agent/gameplay/wear.jsonl --verify --max-age 10
-// Any node. Each item a command hands over is waited on until the client has it. Use is held for 2
-// ticks: vanilla repeats a held use every 4, and a second use would swap straight back.
+// Any node. The player looks straight up first: used on a block, a backpack is placed instead. Each
+// item a command hands over is waited on until the client has it. Use is held for 2 ticks: vanilla
+// repeats a held use every 4, and a second use would swap straight back.
 {"id": "settle", "command": "wait", "args": {"ticks": 40}, "expect": {"ok": true}}
 {"id": "clear", "command": "server.command", "args": {"command": "clear @a"}, "expect": {"ok": true}}
+{"id": "lookUp", "command": "server.command", "args": {"command": "execute as @a at @s run tp @s ~ ~ ~ ~ -90"}, "expect": {"ok": true}}
 {"id": "give", "command": "server.command", "args": {"command": "item replace entity @a weapon.mainhand with backpacksrefined:backpack"}, "expect": {"ok": true}}
 {"id": "synced1", "command": "wait", "args": {"ticks": 10}, "expect": {"ok": true}}
 {"id": "name", "command": "client.tooltip", "args": {"slot": "mainhand"}, "expect": {"ok": true, "result.item": "backpacksrefined:backpack", "result.lines": ["Backpack"]}}

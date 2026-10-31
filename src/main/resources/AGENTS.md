@@ -1,0 +1,53 @@
+# src/main/resources
+
+Shared by every node. Each loader adds its manifest from `src/main/<loader>/resources`. AGENTS.md files
+are kept out of the jars.
+
+```
+assets/backpacksrefined/
+  blockstates/backpack.json       one model, turned by `facing`
+  models/block/backpack.json      the placed backpack (see below)
+  models/item/backpack.json       the item: a flat sprite, as in the old mod
+  items/backpack.json             the item model definition 1.21.4 and later read; older versions ignore it
+  textures/item/backpack.png      16x16 sprite
+  textures/block/backpack.png     64x64, the old mod's textures/entity/backpack.png
+  textures/entity/backpack.png    64x64, the worn model; the old mod's textures/model/backpack.png
+  sounds.json                     what each of the mod's sound events plays
+  lang/                           en_us.json holds every key; checkLang holds the others to it
+data/backpacksrefined/
+  recipe/backpack.json
+  loot_table/blocks/backpack.json
+```
+
+## Data files are written in 26.3's format
+
+Like the sources, a data file is written for 26.3, and `processResources` rewrites it for older nodes
+(the end of `gradle/shared.gradle.kts`):
+
+| Before | Rewrite |
+|---|---|
+| 1.21 | `recipe/` and `loot_table/` become `recipes/` and `loot_tables/` |
+| 1.21.2 | a recipe ingredient `"L": "minecraft:leather"` becomes `{"item": ...}`, `"#tag"` becomes `{"tag": ...}` |
+| 1.20.5 | a recipe result's `"id"` becomes `"item"` |
+
+The ingredient rewrite works line by line and only on one-character keys, the keys a shaped recipe's
+`key` has, so keep one ingredient a line. A format change it does not cover gets a rule there, not a
+copy of the file per version. Check the result in `versions/<node>/build/resources/main/data`.
+
+## The block model
+
+`models/block/backpack.json` is the old mod's block entity model (`BackpackModel.createBlockLayer`)
+turned into block model elements: the base, the lid, and the lid's underside, a flat face seen from
+below. Its UVs are the entity model's box UVs divided by 4 (64 pixels to 16 units). An entity model's
+-y is up and its -x is east here, so its `DOWN` face is the block's `up` and its `WEST` face the block's
+`east`. Facing north, the front, with the clasp, faces south: towards the player who placed it.
+
+`render_type: cutout` is for NeoForge and Forge; the lid's sides have transparent pixels.
+
+## Things that look missing but are not
+
+- **No `equipment/backpack.json`.** The backpack's `equippable` names the equipment asset
+  `backpacksrefined:backpack` and no file exists for it, on purpose: the armor layer then draws nothing,
+  and the mod's own layer draws the backpack. See `src/client/java/com/backpacksrefined/client/AGENTS.md`.
+- **No item lang key.** The item keeps the block's name, `block.backpacksrefined.backpack`, on every
+  version.

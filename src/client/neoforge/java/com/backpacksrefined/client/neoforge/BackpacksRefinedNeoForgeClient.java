@@ -2,6 +2,7 @@ package com.backpacksrefined.client.neoforge;
 
 import com.backpacksrefined.BackpacksRefined;
 import com.backpacksrefined.client.BackpacksRefinedClient;
+import com.backpacksrefined.client.platform.NeoForgeClientRegistration;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -14,5 +15,6 @@ import net.neoforged.fml.common.Mod;
 public final class BackpacksRefinedNeoForgeClient {
     public BackpacksRefinedNeoForgeClient(ModContainer container) {
         BackpacksRefinedClient.initialize();
+        NeoForgeClientRegistration.register(container.getEventBus());
     }
 }

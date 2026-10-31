@@ -39,9 +39,9 @@ world it needs and how to read the result; read it before running one.
 | `new_world.py`, `nbt.py` | Makes the throwaway world a script runs in. See [A world for a script](#a-world-for-a-script) |
 | `clean.py` | Deletes the worlds and captures a run left behind and the next run makes again. See [Cleaning up](#cleaning-up) |
 | `smoke/` | Checks with no gameplay: `boot.jsonl` (a client comes up and its queue answers) and `server-probe.jsonl` (a dedicated server's queue answers with nobody online) |
+| `gameplay/` | The mod's own features: `wear.jsonl` (a right click wears a backpack and swaps it with a chestplate, both ways) |
 
-Scripts for the mod's own features go in a folder named for what they check (`gameplay/`, `ui/`)
-once those features exist.
+Scripts for the mod's own features go in a folder named for what they check (`gameplay/`, `ui/`).
 
 ## A world for a script
 
@@ -65,6 +65,21 @@ and writer it uses, with no dependency.
 
 Use the world name the script's header gives, every time. A new name for each attempt leaves one
 more world per attempt that nothing opens again.
+
+### A node with no world yet
+
+`new_world.py` refuses a node whose `saves/` is empty. A dedicated server would make one, but only
+once someone has accepted `eula.txt` by hand, which is the user's call. Otherwise start a driven client
+(`runClient -Pdriven`, in the background) and click through it with the agent: the accessibility
+screen's Continue, Singleplayer (which opens world creation when there are no worlds), Allow Commands,
+Create New World. `client.capture` after each click shows where the next button is; `client.click`
+takes GUI pixels, the capture's pixels divided by the GUI scale.
+
+### Commands from a script
+
+`server.command` runs as the server, at the world spawn, not at the player. A command that needs the
+player's position runs through them: `execute as @a at @s run playsound <sound> player @s`. A command
+that hands the player an item is seen by the client a few ticks later; `wait` before reading it back.
 
 ## Cleaning up
 

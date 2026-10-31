@@ -162,6 +162,7 @@ tasks.withType<Jar>().matching { it.name.endsWith("sourcesJar") }.configureEach 
 }
 
 extra["node.requiredJava"] = java
+extra["node.atLeast"] = { minecraft: String -> sc.current.parsed >= minecraft }
 apply(from = rootProject.file("gradle/shared.gradle.kts"))
 
 tasks.named<Copy>("buildAndCollect") {

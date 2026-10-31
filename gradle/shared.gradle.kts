@@ -165,3 +165,29 @@ tasks.register<Copy>("buildAndCollect") {
     description = "Builds the mod jar and copies it to build/libs/"
     into(rootProject.layout.buildDirectory.dir("libs"))
 }
+
+// Data files are written in 26.3's format, as the sources are, and rewritten here for the nodes that read
+// an older one. Recipes and loot tables lived in plural folders before 1.21. A recipe's ingredients were
+// objects before 1.21.2 ({"item": ...}, {"tag": ...}) where they are now an id or #tag, and its result
+// named the item `item` before 1.20.5. Ingredients are found as single character keys, the only ones a
+// shaped recipe's `key` has, so a recipe keeps one ingredient a line.
+@Suppress("UNCHECKED_CAST")
+val atLeast = project.extensions.extraProperties.get("node.atLeast") as (String) -> Boolean
+tasks.named<ProcessResources>("processResources") {
+    val ingredient = Regex("""^(\s*"."\s*:\s*)"(#?)([^"]+)"(,?)\s*$""")
+    if (!atLeast("1.21.2")) filesMatching("data/*/recipe/*.json") {
+        filter { line ->
+            ingredient.matchEntire(line)?.let { match ->
+                val (key, tag, id, comma) = match.destructured
+                "$key{\"${if (tag.isEmpty()) "item" else "tag"}\": \"$id\"}$comma"
+            } ?: line
+        }
+    }
+    if (!atLeast("1.20.5")) filesMatching("data/*/recipe/*.json") {
+        filter { line -> line.replace("\"id\":", "\"item\":") }
+    }
+    if (!atLeast("1.21")) {
+        filesMatching("data/*/recipe/**") { path = path.replace("/recipe/", "/recipes/") }
+        filesMatching("data/*/loot_table/**") { path = path.replace("/loot_table/", "/loot_tables/") }
+    }
+}
