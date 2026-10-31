@@ -14,7 +14,9 @@ compiled into `main` and only reached from the client (see the root `AGENTS.md`)
 | `platform/BackpackWornModel` | A humanoid model with every part hidden but the backpack hung on its body |
 | `platform/BackpackWornLayer` | The render layer that draws it, and `create(renderer, models)`, which makes one for a renderer with a humanoid model |
 | `panel/BackpackPanel` | The worn backpack's panel: layout, drawing, clicks, and what the server last sent |
+| `panel/VanillaWindow` | Vanilla's container window and slot drawn with plain fills, for the panel and the placed backpack's screen |
 | `platform/PanelGraphics` | What the panel draws with, where the GUI's method names differ |
+| `platform/BackpackScreen` | A placed backpack's screen, over `menu/BackpackMenu`: its size and background method differ between versions |
 | `platform/ClientNetwork` | Not here: one copy per loader under `src/client/<loader>`, sending to the server |
 | `mixin/AbstractContainerScreenMixin` | Hangs the panel on every container screen. Listed in `backpacksrefined.client.mixins.json` |
 | `mixin/CapeLayerMixin` | Skips a player's cape while they wear a backpack. Listed in `backpacksrefined.client.mixins.json` |
@@ -68,6 +70,14 @@ mixin calls it from the screen's `init`, `removed`, drawing and mouse methods:
 - **Sync**: while the screen is open, the panel asks the server for the contents once a backpack is
   worn and drops them once it is not, checked every frame against the chest slot.
 
+## The placed backpack's screen
+
+`BackpackScreen` draws one window around the slots `BackpackMenu` placed (the backpack's in rows of
+four on the left, the player's inventory on the right), with `VanillaWindow`, so it looks like the
+panel. Vanilla draws the slots' items, the labels and the tooltip. From 26.1 the size goes to the
+constructor and the window is drawn in `extractBackground`; before, `renderBg` draws it and `render`
+adds the tooltip (and on 1.20.1 the darkened world first).
+
 ## Registering, per loader
 
 Each loader registers the model layer and adds the render layer to every living entity renderer, and
@@ -83,7 +93,9 @@ zombies, skeletons, piglins and the rest.
 The same places register the placed backpack's model layer and its block entity renderer (Fabric
 straight into `BlockEntityRenderers`, NeoForge and Forge through `RegisterRenderers`), and the config
 screen: ModMenu's `modmenu` entrypoint (`BackpacksRefinedModMenu`) on Fabric, `IConfigScreenFactory`
-on NeoForge, `ConfigScreenFactory` on Forge, each only when Cloth Config is loaded.
+on NeoForge, `ConfigScreenFactory` on Forge, each only when Cloth Config is loaded. They also give each
+tier's menu type its screen: `MenuScreens.register` on Fabric (Fabric API opens it to mods) and on Forge
+(in client setup), `RegisterMenuScreensEvent` on NeoForge.
 
 ## Drawing the placed backpack
 

@@ -10,7 +10,7 @@ outside `platform/` and `mixin/` has a version conditional (`checkVersionSeam`).
 | `block/` | `BackpacksBlocks` and `BackpacksBlockEntities` (the registries), `BackpackBlock`, the placed backpack, and `BackpackBlockEntity`, which keeps its id |
 | `item/` | `BackpacksItems` (the registry), `BackpackTier` (the six tiers and their sizes), `BackpackItem`, and `BackpacksCreativeTabs`, the mod's own tab |
 | `storage/` | `BackpackStorage`: every backpack's items, by id, saved with the world; `BackpackContents`, one backpack's; `StorageSchema`, the saved layout's version and its migrations |
-| `menu/` | `BackpackMenu`: a placed backpack's menu, vanilla's chest menu with a row per nine slots |
+| `menu/` | `BackpacksMenus` (the registry, a menu type per tier) and `BackpackMenu`: a placed backpack's menu, its slots in rows of four beside the player's inventory |
 | `network/` | `BackpackNetwork`: the panel's messages, their channels, and where each is handled |
 | `panel/` | `PanelServer`: the server side of the worn backpack's panel |
 | `platform/` | Where versions differ, and the loader seam (`platform/AGENTS.md`) |
@@ -31,8 +31,8 @@ and Fabric calls them in that order. Sounds have no place in the order: the bloc
 `SoundEvent` objects themselves rather than looking them up. The objects are kept in static fields
 and read through getters (`BackpacksItems.backpack()`), which throw when called before registration.
 
-Block entity types are registered the same way, after the blocks, and the creative tab after the
-items. Each loader starts a tab with its own
+Block entity types are registered the same way, after the blocks, menu types after the items, and the
+creative tab after them. Each loader starts a tab with its own
 builder, so its mod class passes one in: `CreativeTabs::builder` on Fabric, `CreativeModeTab::builder`
 on NeoForge and Forge.
 
@@ -69,7 +69,7 @@ The plan, and where the code went its own way, is
   damage) is kept as it was and saved back unchanged, and every backpack is locked meanwhile, so it is
   never overwritten by an empty storage. **Until a release ships a layout, change it in place and do
   not bump the schema**; `CHANGELOG.md` says what has shipped.
-- `tools/agent/gameplay/storage.jsonl` checks a placed backpack's chest screen, breaking and wearing it,
+- `tools/agent/gameplay/storage.jsonl` checks a placed backpack's screen, breaking and wearing it,
   and the panel's clicks.
 - The block's display name is `block.backpacksrefined.backpack` on every version: from 1.21.2 the item
   asks to keep the block's name (`useBlockDescriptionPrefix`), as it did by default before.

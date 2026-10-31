@@ -5,8 +5,11 @@ import com.backpacksrefined.client.BackpackRendering;
 import com.backpacksrefined.client.BackpacksRefinedClient;
 import com.backpacksrefined.client.config.BackpacksConfigScreen;
 import com.backpacksrefined.client.platform.BackpackBlockRenderer;
+import com.backpacksrefined.client.platform.BackpackScreen;
 import com.backpacksrefined.client.platform.BackpackWornLayer;
+import com.backpacksrefined.menu.BackpacksMenus;
 import com.backpacksrefined.platform.Loader;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -16,6 +19,7 @@ import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 /** The Forge client half, started by the mod class on a client only. */
 public final class BackpacksRefinedForgeClient {
@@ -30,6 +34,9 @@ public final class BackpacksRefinedForgeClient {
         modBus.addListener((EntityRenderersEvent.RegisterRenderers event) ->
                 event.registerBlockEntityRenderer(BackpacksBlockEntities.backpack(), BackpackBlockRenderer::new));
         modBus.addListener(BackpacksRefinedForgeClient::addLayers);
+        // Forge 47 has no event for screens; vanilla's table is open to mods, and filled on the main thread.
+        modBus.addListener((FMLClientSetupEvent event) -> event.enqueueWork(() ->
+                BackpacksMenus.all().forEach(type -> MenuScreens.register(type, BackpackScreen::new))));
         // The mod list's Config button, when Cloth Config is there to draw the screen.
         if (Loader.isModLoaded("cloth_config")) {
             ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,

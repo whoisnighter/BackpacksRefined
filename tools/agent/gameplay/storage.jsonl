@@ -1,14 +1,14 @@
-// A backpack keeps its items through being placed, broken, picked up and worn: a placed one opens as a
-// one-row chest with a right click, and a worn one shows its slots in a panel beside the inventory,
-// where a click takes the items out.
+// A backpack keeps its items through being placed, broken, picked up and worn: a placed one opens with
+// a right click, its slots in rows of four beside the inventory, and a worn one shows its slots in a
+// panel beside the inventory, where a click takes the items out.
 //   python tools/agent/new_world.py <node> BackpackAgent
 //   ./gradlew ":<node>:runClient" -Pagent=tools/agent/gameplay/storage.jsonl -Pquickplay=BackpackAgent
 //   python tools/agent/drive.py run/<node>/agent/client tools/agent/gameplay/storage.jsonl --verify --max-age 10
 // Any node. The diamonds go in by command, through the placed backpack's container. Panel clicks are
 // measured from the centre of the inventory screen: the panel is on the left, its slots in rows of
 // four, the first 160 left and 59 up, 18 apart each way, so slot 4 is 160 left and 41 up; the
-// inventory's first slot is 72 left and 9 down. Look at the captures `placed` (the chest screen with the
-// diamonds) and `panel` (the panel beside the inventory).
+// inventory's first slot is 72 left and 9 down. Look at the captures `placed` (the backpack's screen
+// with the diamonds) and `panel` (the panel beside the inventory).
 {"id": "settle", "command": "wait", "args": {"ticks": 300}, "expect": {"ok": true}}
 {"id": "clear", "command": "server.command", "args": {"command": "clear @a"}, "expect": {"ok": true}}
 {"id": "face", "command": "server.command", "args": {"command": "execute as @a at @s run tp @s ~ ~ ~ 0 30"}, "expect": {"ok": true}}
@@ -19,7 +19,7 @@
 {"id": "hold", "command": "wait", "args": {"ticks": 2}, "expect": {"ok": true}}
 {"id": "release", "command": "client.key", "args": {"key": "use", "down": false}, "expect": {"ok": true}}
 {"id": "opened", "command": "wait", "args": {"ticks": 10}, "expect": {"ok": true}}
-{"id": "chest", "command": "client.slots", "expect": {"ok": true, "result.menu": "net.minecraft.world.inventory.ChestMenu", "result.slots.0.item": "minecraft:diamond", "result.slots.0.count": 5}}
+{"id": "chest", "command": "client.slots", "expect": {"ok": true, "result.menu": "com.backpacksrefined.menu.BackpackMenu", "result.slots.0.item": "minecraft:diamond", "result.slots.0.count": 5}}
 {"id": "placed", "command": "client.capture", "args": {"name": "placed"}, "expect": {"ok": true}}
 {"id": "close", "command": "client.screen", "args": {"open": "none"}, "expect": {"ok": true}}
 {"id": "break", "command": "server.command", "args": {"command": "execute as @a at @s run setblock ~ ~ ~2 minecraft:air destroy"}, "expect": {"ok": true}}

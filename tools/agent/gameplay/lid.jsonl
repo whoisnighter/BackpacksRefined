@@ -1,5 +1,5 @@
 // A placed backpack is drawn by its block entity renderer: set down by hand it drops into place, its lid
-// opens while its chest screen is open and drops shut after, and on water it bobs. The drop and the
+// opens while its screen is open and drops shut after, and on water it bobs. The drop and the
 // bobbing are off by default, so turn both on first:
 //   python tools/agent/new_world.py <node> BackpackAgent
 //   printf '{"bounceWhenPlaced": true, "bobOnWater": true}' > run/<node>/config/backpacksrefined.json
@@ -26,7 +26,7 @@
 {"id": "hold", "command": "wait", "args": {"ticks": 2}, "expect": {"ok": true}}
 {"id": "release", "command": "client.key", "args": {"key": "use", "down": false}, "expect": {"ok": true}}
 {"id": "opened", "command": "wait", "args": {"ticks": 30}, "expect": {"ok": true}}
-{"id": "chest", "command": "client.slots", "expect": {"ok": true, "result.menu": "net.minecraft.world.inventory.ChestMenu"}}
+{"id": "chest", "command": "client.slots", "expect": {"ok": true, "result.menu": "com.backpacksrefined.menu.BackpackMenu"}}
 {"id": "closeStart", "command": "client.record", "args": {"action": "start", "name": "close", "every": 1}, "expect": {"ok": true}}
 {"id": "close", "command": "client.screen", "args": {"open": "none"}, "expect": {"ok": true}}
 {"id": "closing", "command": "wait", "args": {"ticks": 16}, "expect": {"ok": true}}

@@ -43,6 +43,7 @@ and the worn backpack is never drawn; see `src/client/java/com/backpacksrefined/
 | Class | Where versions differ |
 |---|---|
 | `src/main/fabric/.../platform/CreativeTabs` | Fabric API renamed its creative tab events and builder in 26.1 (`CreativeModeTabEvents`, `FabricCreativeModeTab`; before `ItemGroupEvents`, `FabricItemGroup`) |
+| `src/client/java/.../client/platform/BackpackScreen` | A container screen's size is given to its constructor from 26.1 (final) and set after before; its background is `extractBackground` from 26.1, `renderBg` before, with `render` adding the tooltip |
 | `src/client/java/.../client/platform/BackpackWornModel`, `BackpackWornLayer` | How a render layer draws: by submitting with a render state from 1.21.9, by drawing at once before |
 | `src/client/fabric/.../client/platform/FabricClientRegistration` | Fabric API renamed its model layer and render layer registries in 26.1, and 26.1 dropped the block cutout map |
 | `src/client/neoforge/.../client/platform/NeoForgeClientRegistration` | NeoForge renamed the player renderer lookup in `AddLayers` in 1.21.9 |

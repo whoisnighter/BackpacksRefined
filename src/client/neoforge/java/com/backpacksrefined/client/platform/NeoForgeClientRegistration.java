@@ -2,11 +2,13 @@ package com.backpacksrefined.client.platform;
 
 import com.backpacksrefined.block.BackpacksBlockEntities;
 import com.backpacksrefined.client.BackpackRendering;
+import com.backpacksrefined.menu.BackpacksMenus;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.world.entity.EntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 /** NeoForge's client registry events; where the player renderers are found changed in 1.21.9. */
 public final class NeoForgeClientRegistration {
@@ -20,6 +22,8 @@ public final class NeoForgeClientRegistration {
         modBus.addListener((EntityRenderersEvent.RegisterRenderers event) ->
                 event.registerBlockEntityRenderer(BackpacksBlockEntities.backpack(), BackpackBlockRenderer::new));
         modBus.addListener(NeoForgeClientRegistration::addLayers);
+        modBus.addListener((RegisterMenuScreensEvent event) ->
+                BackpacksMenus.all().forEach(type -> event.register(type, BackpackScreen::new)));
     }
 
     private static void addLayers(EntityRenderersEvent.AddLayers event) {

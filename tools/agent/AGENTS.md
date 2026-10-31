@@ -39,7 +39,7 @@ world it needs and how to read the result; read it before running one.
 | `new_world.py`, `nbt.py` | Makes the throwaway world a script runs in. See [A world for a script](#a-world-for-a-script) |
 | `clean.py` | Deletes the worlds and captures a run left behind and the next run makes again. See [Cleaning up](#cleaning-up) |
 | `smoke/` | Checks with no gameplay: `boot.jsonl` (a client comes up and its queue answers) and `server-probe.jsonl` (a dedicated server's queue answers with nobody online) |
-| `gameplay/` | The mod's own features: `wear.jsonl` (a right click wears a backpack and swaps it with a chestplate, both ways), `water.jsonl` (floating and waterlogging, the creative tab), `storage.jsonl` (a placed backpack's chest screen, breaking and wearing it, the panel's clicks), `tiers.jsonl` (each tier opens its own slots of the panel, the rest are locked) |
+| `gameplay/` | The mod's own features: `wear.jsonl` (a right click wears a backpack and swaps it with a chestplate, both ways), `water.jsonl` (floating and waterlogging, the creative tab), `storage.jsonl` (a placed backpack's screen, breaking and wearing it, the panel's clicks), `tiers.jsonl` (each tier opens its own slots of the panel, the rest are locked) |
 
 Scripts for the mod's own features go in a folder named for what they check (`gameplay/`, `ui/`).
 

@@ -5,6 +5,7 @@ import com.backpacksrefined.block.BackpacksBlockEntities;
 import com.backpacksrefined.block.BackpacksBlocks;
 import com.backpacksrefined.item.BackpacksCreativeTabs;
 import com.backpacksrefined.item.BackpacksItems;
+import com.backpacksrefined.menu.BackpacksMenus;
 import com.backpacksrefined.platform.Network;
 import com.backpacksrefined.sound.BackpacksSounds;
 import net.minecraft.core.registries.Registries;
@@ -25,6 +26,7 @@ public final class BackpacksRefinedNeoForge {
             event.register(Registries.BLOCK, helper -> BackpacksBlocks.register(helper::register));
             event.register(Registries.BLOCK_ENTITY_TYPE, helper -> BackpacksBlockEntities.register(helper::register));
             event.register(Registries.ITEM, helper -> BackpacksItems.register(helper::register));
+            event.register(Registries.MENU, helper -> BackpacksMenus.register(helper::register));
             event.register(Registries.CREATIVE_MODE_TAB,
                     helper -> BackpacksCreativeTabs.register(helper::register, CreativeModeTab::builder));
         });

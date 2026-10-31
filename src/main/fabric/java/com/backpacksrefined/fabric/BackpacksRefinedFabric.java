@@ -6,6 +6,7 @@ import com.backpacksrefined.block.BackpacksBlocks;
 import com.backpacksrefined.item.BackpackTier;
 import com.backpacksrefined.item.BackpacksCreativeTabs;
 import com.backpacksrefined.item.BackpacksItems;
+import com.backpacksrefined.menu.BackpacksMenus;
 import com.backpacksrefined.platform.CreativeTabs;
 import com.backpacksrefined.platform.Network;
 import com.backpacksrefined.sound.BackpacksSounds;
@@ -22,6 +23,7 @@ public final class BackpacksRefinedFabric implements ModInitializer {
         BackpacksBlocks.register((id, block) -> Registry.register(BuiltInRegistries.BLOCK, id, block));
         BackpacksBlockEntities.register((id, type) -> Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, id, type));
         BackpacksItems.register((id, item) -> Registry.register(BuiltInRegistries.ITEM, id, item));
+        BackpacksMenus.register((id, type) -> Registry.register(BuiltInRegistries.MENU, id, type));
         BackpacksCreativeTabs.register((id, tab) -> Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, id, tab), CreativeTabs::builder);
         for (BackpackTier tier : BackpackTier.values()) CreativeTabs.addToTools(() -> BackpacksItems.backpack(tier));
         Network.register();

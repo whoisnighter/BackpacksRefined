@@ -3,8 +3,12 @@ package com.backpacksrefined.client.platform;
 import com.backpacksrefined.block.BackpacksBlockEntities;
 import com.backpacksrefined.block.BackpacksBlocks;
 import com.backpacksrefined.client.BackpackRendering;
+import com.backpacksrefined.menu.BackpackMenu;
+import com.backpacksrefined.menu.BackpacksMenus;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.world.inventory.MenuType;
 //? if >=26.1 {
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
@@ -18,7 +22,7 @@ import net.minecraft.world.level.block.Block;
 
 /**
  * Fabric API's client registries, which 26.1 renamed to Minecraft's own names. The placed backpack's
- * renderer goes straight into Minecraft's own table, which is what Fabric API's would do.
+ * renderer and screens go straight into Minecraft's own tables, which Fabric API opens for mods.
  */
 public final class FabricClientRegistration {
     private FabricClientRegistration() { }
@@ -43,5 +47,6 @@ public final class FabricClientRegistration {
         for (Block block : BackpacksBlocks.all()) BlockRenderLayerMap.putBlock(block, ChunkSectionLayer.CUTOUT);
         *///?}
         BlockEntityRenderers.register(BackpacksBlockEntities.backpack(), BackpackBlockRenderer::new);
+        for (MenuType<BackpackMenu> type : BackpacksMenus.all()) MenuScreens.register(type, BackpackScreen::new);
     }
 }

@@ -37,19 +37,13 @@ import java.util.List;
  * every container screen draws the player's inventory.
  */
 public final class BackpackPanel {
-    private static final int SLOT = 18;
+    private static final int SLOT = VanillaWindow.SLOT;
     private static final int COLUMNS = 4;
     private static final int PADDING = 7;
     /** Room above the slots for the title. */
     private static final int HEADER = 15;
     private static final int GAP = 2;
 
-    private static final int BACKGROUND = 0xFFC6C6C6;
-    private static final int OUTLINE = 0xFF000000;
-    private static final int LIGHT = 0xFFFFFFFF;
-    private static final int SHADOW = 0xFF555555;
-    private static final int SLOT_DARK = 0xFF373737;
-    private static final int SLOT_FILL = 0xFF8B8B8B;
     private static final int HIGHLIGHT = 0x80FFFFFF;
     private static final int LOCKED = 0x80000000;
     private static final int TITLE_COLOR = 0xFF404040;
@@ -162,14 +156,14 @@ public final class BackpackPanel {
         if (!visible(on)) return;
         layout(on, leftPos, topPos, imageWidth, imageHeight);
         Minecraft minecraft = Minecraft.getInstance();
-        window(graphics);
+        VanillaWindow.window(graphics, left, top, width, height);
         PanelGraphics.text(graphics, minecraft.font, Component.translatable("container.backpacksrefined.backpack"),
                 left + PADDING + 1, top + 5, TITLE_COLOR);
         int hovered = slotAt(mouseX, mouseY);
         for (int slot = 0; slot < BackpackTier.MAX_SIZE; slot++) {
             int x = left + PADDING + slot % COLUMNS * SLOT;
             int y = gridTop + slot / COLUMNS * SLOT;
-            inset(graphics, x, y, SLOT, SLOT);
+            VanillaWindow.slot(graphics, x, y);
             if (slot >= stacks.size()) {
                 PanelGraphics.fill(graphics, x, y, x + SLOT, y + SLOT, LOCKED);
                 continue;
@@ -181,50 +175,6 @@ public final class BackpackPanel {
         if (hovered >= 0 && !stacks.get(hovered).isEmpty() && on.getMenu().getCarried().isEmpty()) {
             PanelGraphics.tooltip(graphics, minecraft.font, stacks.get(hovered), mouseX, mouseY);
         }
-    }
-
-    /**
-     * Vanilla's window, pixel for pixel as its container textures draw it: a black outline whose corners
-     * step in two pixels, a light band along the top and left, a dark one along the bottom and right.
-     */
-    private static void window(GuiGraphicsExtractor graphics) {
-        int w = width;
-        int h = height;
-        pixels(graphics, 1, 2, w - 2, h - 4, BACKGROUND);
-        pixels(graphics, 2, 1, w - 4, 1, BACKGROUND);
-        pixels(graphics, 2, h - 2, w - 4, 1, BACKGROUND);
-        pixels(graphics, 2, 1, w - 5, 1, LIGHT);
-        pixels(graphics, 1, 2, w - 4, 1, LIGHT);
-        pixels(graphics, 1, 3, 2, h - 6, LIGHT);
-        pixels(graphics, 3, 3, 1, 1, LIGHT);
-        pixels(graphics, w - 3, 3, 2, h - 6, SHADOW);
-        pixels(graphics, w - 4, h - 4, 1, 1, SHADOW);
-        pixels(graphics, 3, h - 3, w - 4, 1, SHADOW);
-        pixels(graphics, 3, h - 2, w - 5, 1, SHADOW);
-        pixels(graphics, 2, 0, w - 5, 1, OUTLINE);
-        pixels(graphics, 1, 1, 1, 1, OUTLINE);
-        pixels(graphics, w - 3, 1, 1, 1, OUTLINE);
-        pixels(graphics, 0, 2, 1, h - 5, OUTLINE);
-        pixels(graphics, w - 2, 2, 1, 1, OUTLINE);
-        pixels(graphics, w - 1, 3, 1, h - 5, OUTLINE);
-        pixels(graphics, 1, h - 3, 1, 1, OUTLINE);
-        pixels(graphics, 2, h - 2, 1, 1, OUTLINE);
-        pixels(graphics, w - 2, h - 2, 1, 1, OUTLINE);
-        pixels(graphics, 3, h - 1, w - 5, 1, OUTLINE);
-    }
-
-    /** A rectangle of the window, from its top left corner. */
-    private static void pixels(GuiGraphicsExtractor graphics, int x, int y, int w, int h, int color) {
-        PanelGraphics.fill(graphics, left + x, top + y, left + x + w, top + y + h, color);
-    }
-
-    /** Vanilla's sunken slot: dark top and left, light bottom and right, mid grey where they meet. */
-    private static void inset(GuiGraphicsExtractor graphics, int x, int y, int w, int h) {
-        PanelGraphics.fill(graphics, x, y, x + w - 1, y + h - 1, SLOT_DARK);
-        PanelGraphics.fill(graphics, x + 1, y + 1, x + w, y + h, LIGHT);
-        PanelGraphics.fill(graphics, x + 1, y + 1, x + w - 1, y + h - 1, SLOT_FILL);
-        PanelGraphics.fill(graphics, x + w - 1, y, x + w, y + 1, SLOT_FILL);
-        PanelGraphics.fill(graphics, x, y + h - 1, x + 1, y + h, SLOT_FILL);
     }
 
     /**

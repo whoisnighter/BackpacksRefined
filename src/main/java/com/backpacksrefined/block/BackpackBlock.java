@@ -39,7 +39,7 @@ import java.util.UUID;
 
 /**
  * A backpack set down on the ground, facing the way the player who placed it was looking. Used, it opens
- * as a chest of a row for each nine of the backpack's slots; broken, it gives the backpack back with the same items.
+ * its slots in rows of four beside the player's inventory; broken, it gives the backpack back with the same items.
  * The items never move: the block entity takes the backpack's id when it is placed, and the dropped
  * backpack takes it back (see {@link BackpackBlockEntity}).
  *
@@ -132,7 +132,7 @@ public class BackpackBlock extends OpenableBlock implements EntityBlock {
     protected void open(Level level, BlockPos pos, Player player) {
         if (!(level.getBlockEntity(pos) instanceof BackpackBlockEntity backpack)) return;
         player.openMenu(new SimpleMenuProvider((containerId, inventory, opener) ->
-                new BackpackMenu(containerId, inventory, backpack), getName()));
+                new BackpackMenu(containerId, inventory, backpack, tier), getName()));
         level.playSound(null, pos, tier.equipSound(), SoundSource.BLOCKS, 1.0F, 1.0F);
     }
 
