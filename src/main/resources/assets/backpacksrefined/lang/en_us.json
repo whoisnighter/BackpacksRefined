@@ -8,5 +8,11 @@
   "block.backpacksrefined.netherite_backpack": "Netherite Backpack",
   "container.backpacksrefined.backpack": "Backpack",
   "subtitles.backpacksrefined.item.backpack.equip": "Backpack equipped",
-  "modmenu.descriptionTranslation.backpacksrefined": "A simple, immersive backpack mod: wear a backpack in your chestplate slot or place it down as a container, with no extra keybinds, menus or slots."
+  "modmenu.descriptionTranslation.backpacksrefined": "A simple, immersive backpack mod: wear a backpack in your chestplate slot or place it down as a container, with no extra keybinds, menus or slots.",
+  "config.backpacksrefined.title": "Backpacks Refined",
+  "config.backpacksrefined.animations": "Animations",
+  "config.backpacksrefined.bounce_when_placed": "Bounce When Placed",
+  "config.backpacksrefined.bounce_when_placed.tooltip": "A backpack drops into place with a small wobble when set down.",
+  "config.backpacksrefined.bob_on_water": "Bob on Water",
+  "config.backpacksrefined.bob_on_water.tooltip": "A backpack floating on water rises and falls with the waves."
 }

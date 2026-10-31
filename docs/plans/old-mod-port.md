@@ -20,7 +20,11 @@ Holding items and tiers have their own plan: [backpack-panel.md](backpack-panel.
   smaller than a full block; breaking it drops the backpack, its items still in it.
 - **Floating and waterlogging.** A placed backpack can stand in water. Over a water source, and not in
   water itself, it floats: it sits 3 pixels lower, half in the water, and its shape is 8 pixels tall.
-  It changes as the water under it comes and goes. It does not bob yet (see the animations below).
+  It changes as the water under it comes and goes.
+- **The block's animations.** The placed backpack is drawn by a block entity renderer again, from the
+  old mod's block model. Its lid springs open while anyone has it open and drops shut with a bounce
+  (block event 1, the number of openers). The drop when set down (block event 2) and the bobbing on
+  water are the old mod's, and are off unless turned on in the config (see [Config](#config)).
 - **Recipe.** Four leather around a chest (the old mod had eight). The upper tiers are crafted from it, see [backpack-panel.md](backpack-panel.md).
 - **Holding items.** 8 to 32 slots by tier (leather, copper, iron, gold, diamond, netherite), not the old mod's way: worn, in a panel beside the inventory and every
   container screen; placed, a right click opens them as a chest. See
@@ -44,25 +48,33 @@ rewritten data files), so they are the ones to run next.
 - **A full backpack can't be taken off** (the old `ArmorSlotMixin` refused to pick a backpack with items
   out of the armor slot). Dropped: with no sneak to set one down it would leave a full backpack stuck
   on the back, and swapping a chestplate on got round it anyway.
+- **The lid opening on the wearer** while someone looks inside the worn backpack (the old
+  `LivingEntityMixin`, `OPEN_COUNT`). Dropped: only the placed backpack's lid opens.
 - **The old mod's other languages** (German, Spanish (Mexico), Russian, Swedish). Dropped.
 
 ## Still to bring over
 
 - **A dropped full backpack places itself.** The old `ItemEntityMixin` turned a dropped backpack with
   items into a placed block where it landed, so it never despawned.
-- **The block's animations.** The lid opening, a bounce when placed, bobbing while floating (it floats
-  now, but holds still). These need the block drawn by a block entity renderer again; it is a static
-  block model now.
-- **The lid opening on the wearer** while someone looks inside (`LivingEntityMixin`, `OPEN_COUNT`).
 
 ## Decisions
+
+### Config
+
+- Client settings in `config/backpacksrefined.json`, read when the client starts: `bounceWhenPlaced` and
+  `bobOnWater`, both off by default.
+- The screen is built with Cloth Config, so it is the same on every loader and version. Cloth Config is
+  optional: without it there is no screen, and the file still applies. ModMenu opens it on Fabric, the
+  mod list's Config button on NeoForge and Forge.
 
 ### Sounds
 
 - **Equip:** vanilla leather armor (`item.armor.equip_leather`) on every node, for every backpack.
-- **Tiers:** the upgraded tiers in [backpack-panel.md](backpack-panel.md#tiers) (copper and up) equip with
-  plain wolf armor (`item.armor.equip_wolf`, no pitch change). 1.20.1 has no wolf armor sound, so it
-  needs a fallback there.
+- **Tiers:** iron and up (see [backpack-panel.md](backpack-panel.md#tiers)) equip with plain wolf armor
+  (`item.armor.equip_wolf`, no pitch change), through the mod's `item.backpack.equip_armored` event;
+  leather and copper keep leather's. 1.20.1 has no wolf armor sound, so `processResources` points the
+  event at leather's there (the end of `gradle/shared.gradle.kts`). Opening a placed backpack plays its
+  tier's equip sound too.
 - **Place:** the bundle insert sound at pitch 0.1, as the old mod had it.
 
 ### Fire

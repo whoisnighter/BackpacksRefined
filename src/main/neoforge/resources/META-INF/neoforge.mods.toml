@@ -38,3 +38,11 @@ type = "required"
 versionRange = "${minecraft}"
 ordering = "NONE"
 side = "BOTH"
+
+# Draws the config screen when installed; see stonecutter.properties.toml.
+[[dependencies.backpacksrefined]]
+modId = "cloth_config"
+type = "optional"
+versionRange = "[0,)"
+ordering = "NONE"
+side = "CLIENT"

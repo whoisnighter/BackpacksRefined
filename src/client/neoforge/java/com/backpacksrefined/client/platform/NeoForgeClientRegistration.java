@@ -1,5 +1,6 @@
 package com.backpacksrefined.client.platform;
 
+import com.backpacksrefined.block.BackpacksBlockEntities;
 import com.backpacksrefined.client.BackpackRendering;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
@@ -12,8 +13,12 @@ public final class NeoForgeClientRegistration {
     private NeoForgeClientRegistration() { }
 
     public static void register(IEventBus modBus) {
-        modBus.addListener((EntityRenderersEvent.RegisterLayerDefinitions event) ->
-                event.registerLayerDefinition(BackpackRendering.WORN_LAYER, BackpackRendering::createWornLayer));
+        modBus.addListener((EntityRenderersEvent.RegisterLayerDefinitions event) -> {
+            event.registerLayerDefinition(BackpackRendering.WORN_LAYER, BackpackRendering::createWornLayer);
+            event.registerLayerDefinition(BackpackRendering.BLOCK_LAYER, BackpackRendering::createBlockLayer);
+        });
+        modBus.addListener((EntityRenderersEvent.RegisterRenderers event) ->
+                event.registerBlockEntityRenderer(BackpacksBlockEntities.backpack(), BackpackBlockRenderer::new));
         modBus.addListener(NeoForgeClientRegistration::addLayers);
     }
 

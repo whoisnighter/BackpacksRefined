@@ -6,7 +6,11 @@ compiled into `main` and only reached from the client (see the root `AGENTS.md`)
 | Class | What it is |
 |---|---|
 | `BackpacksRefinedClient` | The common client entrypoint each loader's client entrypoint calls |
-| `BackpackRendering` | The worn backpack's model layer, texture and shape (`createWornLayer`), the same on every version |
+| `BackpackRendering` | The model layers, textures and shapes of the worn backpack (`createWornLayer`) and the placed one (`createBlockLayer`), the same on every version |
+| `BackpackBlockPose` | How a placed backpack is posed in a frame: the lid, the drop when set down, the bobbing on water |
+| `platform/BackpackBlockRenderer` | The placed backpack's block entity renderer |
+| `config/BackpacksConfig` | The client settings, `config/backpacksrefined.json` |
+| `config/BackpacksConfigScreen` | The Cloth Config screen over them; only reached when Cloth Config is installed |
 | `platform/BackpackWornModel` | A humanoid model with every part hidden but the backpack hung on its body |
 | `platform/BackpackWornLayer` | The render layer that draws it, and `create(renderer, models)`, which makes one for a renderer with a humanoid model |
 | `panel/BackpackPanel` | The worn backpack's panel: layout, drawing, clicks, and what the server last sent |
@@ -76,9 +80,24 @@ zombies, skeletons, piglins and the rest.
 | NeoForge | `src/client/neoforge/.../platform/NeoForgeClientRegistration` | `RegisterLayerDefinitions`; `AddLayers` over its entity types and player skins |
 | Forge | `src/client/forge/.../BackpacksRefinedForgeClient` | the same events; Forge 47 has no list of entity types, so it asks for every one in the registry |
 
-The placed block is a plain block model, not drawn from here. Its texture has cut-out pixels: Fabric
-before 26.1 needs `BlockRenderLayerMap` (in `FabricClientRegistration`), NeoForge and Forge read
-`render_type` in the model file, and from 26.1 the game sees it in the texture.
+The same places register the placed backpack's model layer and its block entity renderer (Fabric
+straight into `BlockEntityRenderers`, NeoForge and Forge through `RegisterRenderers`), and the config
+screen: ModMenu's `modmenu` entrypoint (`BackpacksRefinedModMenu`) on Fabric, `IConfigScreenFactory`
+on NeoForge, `ConfigScreenFactory` on Forge, each only when Cloth Config is loaded.
+
+## Drawing the placed backpack
+
+The block's render shape is invisible; `BackpackBlockRenderer` draws it from the old mod's block model on
+`textures/block/<tier>.png`, so the lid can turn. The block models stay for the item and the breaking
+particles. The item is drawn with the block model, whose texture has cut-out pixels: Fabric before
+26.1 needs `BlockRenderLayerMap` (in `FabricClientRegistration`), NeoForge and Forge read `render_type`
+in the model file, and from 26.1 the game sees it in the texture.
+
+The block entity hears of the lid and of being set down through block events and keeps their game
+times; `BackpackBlockPose` works the pose out from them each frame. From 1.21.9 the pose goes into the
+render state and the model is posed in `setupAnim`, when it is drawn, as for the worn backpack. The
+no-cull cutout render type is `entityCutout` from 26.1, `entityCutoutNoCull` before, and 26.3 submits
+the breaking cracks with `submitCrumblingOverlay`.
 
 ## Checking it
 

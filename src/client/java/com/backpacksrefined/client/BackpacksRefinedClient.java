@@ -1,6 +1,7 @@
 package com.backpacksrefined.client;
 
 import com.backpacksrefined.BackpacksRefined;
+import com.backpacksrefined.client.config.BackpacksConfig;
 import com.backpacksrefined.client.panel.BackpackPanel;
 import com.backpacksrefined.client.platform.ClientNetwork;
 
@@ -10,6 +11,7 @@ public final class BackpacksRefinedClient {
 
     public static void initialize() {
         BackpacksRefined.LOGGER.info("{} client starting", BackpacksRefined.MOD_NAME);
+        BackpacksConfig.load();
         ClientNetwork.register();
         BackpackPanel.register();
     }

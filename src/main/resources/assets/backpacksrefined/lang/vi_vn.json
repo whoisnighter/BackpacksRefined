@@ -8,5 +8,11 @@
   "block.backpacksrefined.netherite_backpack": "Ba lô netherite",
   "container.backpacksrefined.backpack": "Ba lô",
   "subtitles.backpacksrefined.item.backpack.equip": "Đeo ba lô",
-  "modmenu.descriptionTranslation.backpacksrefined": "Mod ba lô đơn giản và chân thực: đeo ba lô ở ô giáp ngực hoặc đặt xuống như một chiếc rương, không cần thêm phím tắt, menu hay ô đồ."
+  "modmenu.descriptionTranslation.backpacksrefined": "Mod ba lô đơn giản và chân thực: đeo ba lô ở ô giáp ngực hoặc đặt xuống như một chiếc rương, không cần thêm phím tắt, menu hay ô đồ.",
+  "config.backpacksrefined.title": "Backpacks Refined",
+  "config.backpacksrefined.animations": "Hoạt ảnh",
+  "config.backpacksrefined.bounce_when_placed": "Nảy khi đặt xuống",
+  "config.backpacksrefined.bounce_when_placed.tooltip": "Ba lô rơi xuống chỗ đặt và lắc nhẹ một chút.",
+  "config.backpacksrefined.bob_on_water": "Nhấp nhô trên nước",
+  "config.backpacksrefined.bob_on_water.tooltip": "Ba lô nổi trên nước sẽ nhấp nhô theo sóng."
 }

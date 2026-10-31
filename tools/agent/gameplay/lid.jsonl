@@ -1,0 +1,40 @@
+// A placed backpack is drawn by its block entity renderer: set down by hand it drops into place, its lid
+// opens while its chest screen is open and drops shut after, and on water it bobs. The drop and the
+// bobbing are off by default, so turn both on first:
+//   python tools/agent/new_world.py <node> BackpackAgent
+//   printf '{"bounceWhenPlaced": true, "bobOnWater": true}' > run/<node>/config/backpacksrefined.json
+//   ./gradlew ":<node>:runClient" -Pagent=tools/agent/gameplay/lid.jsonl -Pquickplay=BackpackAgent
+//   python tools/agent/drive.py run/<node>/agent/client tools/agent/gameplay/lid.jsonl --verify --max-age 10
+// Any node. The player looks south and sets the backpack down about three blocks ahead, so its front,
+// with the clasp, faces the player. Look at the captures `placed` (the front, lid shut), the recordings
+// `drop` (it falls the last pixels and rocks) and `close` (the first frame open, then the lid drops shut
+// and bounces once), and `water` (the floating one half sunk; the recording `bob` rises and falls).
+{"id": "settle", "command": "wait", "args": {"ticks": 300}, "expect": {"ok": true}}
+{"id": "clear", "command": "server.command", "args": {"command": "clear @a"}, "expect": {"ok": true}}
+{"id": "face", "command": "server.command", "args": {"command": "execute as @a at @s run tp @s ~ ~ ~ 0 30"}, "expect": {"ok": true}}
+{"id": "give", "command": "server.command", "args": {"command": "item replace entity @a weapon.mainhand with backpacksrefined:backpack"}, "expect": {"ok": true}}
+{"id": "given", "command": "wait", "args": {"ticks": 10}, "expect": {"ok": true}}
+{"id": "dropStart", "command": "client.record", "args": {"action": "start", "name": "drop", "every": 1}, "expect": {"ok": true}}
+{"id": "setDown", "command": "client.key", "args": {"key": "use", "down": true}, "expect": {"ok": true}}
+{"id": "setDownHold", "command": "wait", "args": {"ticks": 1}, "expect": {"ok": true}}
+{"id": "setDownRelease", "command": "client.key", "args": {"key": "use", "down": false}, "expect": {"ok": true}}
+{"id": "dropping", "command": "wait", "args": {"ticks": 12}, "expect": {"ok": true}}
+{"id": "dropStop", "command": "client.record", "args": {"action": "stop"}, "expect": {"ok": true}}
+{"id": "isPlaced", "command": "server.command", "args": {"command": "execute as @a at @s if block ~ ~ ~3 backpacksrefined:backpack[facing=south]"}, "expect": {"ok": true, "result.messages": ["Test passed"]}}
+{"id": "placed", "command": "client.capture", "args": {"name": "placed"}, "expect": {"ok": true}}
+{"id": "use", "command": "client.key", "args": {"key": "use", "down": true}, "expect": {"ok": true}}
+{"id": "hold", "command": "wait", "args": {"ticks": 2}, "expect": {"ok": true}}
+{"id": "release", "command": "client.key", "args": {"key": "use", "down": false}, "expect": {"ok": true}}
+{"id": "opened", "command": "wait", "args": {"ticks": 30}, "expect": {"ok": true}}
+{"id": "chest", "command": "client.slots", "expect": {"ok": true, "result.menu": "net.minecraft.world.inventory.ChestMenu"}}
+{"id": "closeStart", "command": "client.record", "args": {"action": "start", "name": "close", "every": 1}, "expect": {"ok": true}}
+{"id": "close", "command": "client.screen", "args": {"open": "none"}, "expect": {"ok": true}}
+{"id": "closing", "command": "wait", "args": {"ticks": 16}, "expect": {"ok": true}}
+{"id": "closeStop", "command": "client.record", "args": {"action": "stop"}, "expect": {"ok": true}}
+{"id": "pool", "command": "server.command", "args": {"command": "execute as @a at @s run fill ~1 ~-1 ~2 ~3 ~-1 ~4 minecraft:water"}, "expect": {"ok": true}}
+{"id": "float", "command": "server.command", "args": {"command": "execute as @a at @s run setblock ~2 ~ ~3 backpacksrefined:backpack[facing=south,floating=true]"}, "expect": {"ok": true}}
+{"id": "settled", "command": "wait", "args": {"ticks": 20}, "expect": {"ok": true}}
+{"id": "water", "command": "client.capture", "args": {"name": "water"}, "expect": {"ok": true}}
+{"id": "bobStart", "command": "client.record", "args": {"action": "start", "name": "bob", "every": 10}, "expect": {"ok": true}}
+{"id": "bobbing", "command": "wait", "args": {"ticks": 90}, "expect": {"ok": true}}
+{"id": "bobStop", "command": "client.record", "args": {"action": "stop"}, "expect": {"ok": true}}

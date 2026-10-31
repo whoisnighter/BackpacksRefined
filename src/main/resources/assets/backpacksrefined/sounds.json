@@ -5,6 +5,12 @@
       { "name": "item.armor.equip_leather", "type": "event" }
     ]
   },
+  "item.backpack.equip_armored": {
+    "subtitle": "subtitles.backpacksrefined.item.backpack.equip",
+    "sounds": [
+      { "name": "item.armor.equip_wolf", "type": "event" }
+    ]
+  },
   "block.backpack.place": {
     "sounds": [
       { "name": "item.bundle.insert", "type": "event", "pitch": 0.1 }

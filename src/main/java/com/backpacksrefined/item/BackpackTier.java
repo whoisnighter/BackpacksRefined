@@ -1,7 +1,9 @@
 package com.backpacksrefined.item;
 
 import com.backpacksrefined.BackpacksRefined;
+import com.backpacksrefined.sound.BackpacksSounds;
 import net.minecraft.resources.Identifier;
+import net.minecraft.sounds.SoundEvent;
 
 /**
  * A backpack's tier: each is its own item and block, a row of four slots more than the one before, but
@@ -40,6 +42,11 @@ public enum BackpackTier {
 
     public int size() {
         return size;
+    }
+
+    /** What it sounds like put on, or opened where it is placed: leather up to copper, wolf armor from iron. */
+    public SoundEvent equipSound() {
+        return ordinal() >= IRON.ordinal() ? BackpacksSounds.EQUIP_ARMORED : BackpacksSounds.EQUIP;
     }
 
     /** Whether it survives fire and lava, as netherite gear does. */

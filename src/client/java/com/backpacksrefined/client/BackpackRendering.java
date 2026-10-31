@@ -14,14 +14,20 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
-/** What drawing a worn backpack needs, on every version: its model layer, its texture and its shape. */
+/**
+ * What drawing a backpack needs, on every version: the model layers, textures and shapes of the worn
+ * backpack and of the placed one.
+ */
 public final class BackpackRendering {
     public static final ModelLayerLocation WORN_LAYER = new ModelLayerLocation(BackpacksRefined.id("backpack"), "main");
+    public static final ModelLayerLocation BLOCK_LAYER = new ModelLayerLocation(BackpacksRefined.id("backpack"), "block");
     private static final Identifier[] WORN_TEXTURES = new Identifier[BackpackTier.values().length];
+    private static final Identifier[] BLOCK_TEXTURES = new Identifier[BackpackTier.values().length];
 
     static {
         for (BackpackTier tier : BackpackTier.values()) {
             WORN_TEXTURES[tier.ordinal()] = BackpacksRefined.id("textures/entity/" + tier.path() + ".png");
+            BLOCK_TEXTURES[tier.ordinal()] = BackpacksRefined.id("textures/block/" + tier.path() + ".png");
         }
     }
 
@@ -34,6 +40,11 @@ public final class BackpackRendering {
     /** The worn texture of {@code stack}'s tier; {@code stack} is a backpack. */
     public static Identifier wornTexture(ItemStack stack) {
         return WORN_TEXTURES[((BackpackItem) stack.getItem()).tier().ordinal()];
+    }
+
+    /** The placed backpack's texture for {@code tier}, the one its block model uses too. */
+    public static Identifier blockTexture(BackpackTier tier) {
+        return BLOCK_TEXTURES[tier.ordinal()];
     }
 
     /**
@@ -51,6 +62,23 @@ public final class BackpackRendering {
                         .texOffs(0, 15).addBox(-4.5F, -1.0F, -2.0F, 9.0F, 4.0F, 7.0F, CubeDeformation.NONE)
                         .texOffs(32, 18).addBox(-4.5F, 0.0F, -2.0F, 9.0F, 1.0F, 7.0F, CubeDeformation.NONE),
                 PartPose.offset(-3.0F, -9.0F, 0.5F));
+        return LayerDefinition.create(mesh, 64, 64);
+    }
+
+    /**
+     * The placed backpack: the old mod's block entity model, which {@code models/block/backpack.json}
+     * copies, on the same 64x64 texture. The lid hangs from the back of the base's top, so turning it
+     * on x opens it; its underside is a flat face, seen when it is open.
+     */
+    public static LayerDefinition createBlockLayer() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition base = mesh.getRoot().addOrReplaceChild("base", CubeListBuilder.create()
+                        .texOffs(0, 0).addBox(-5.0F, -11.0F, -4.0F, 10.0F, 11.0F, 8.0F, CubeDeformation.NONE),
+                PartPose.offset(0.0F, 24.0F, 0.0F));
+        base.addOrReplaceChild("lid", CubeListBuilder.create()
+                        .texOffs(0, 19).addBox(-5.5F, -2.0F, -0.5F, 11.0F, 5.0F, 9.0F, CubeDeformation.NONE)
+                        .texOffs(-9, 33).addBox(-5.5F, 1.0F, -0.5F, 11.0F, 0.0F, 9.0F, CubeDeformation.NONE),
+                PartPose.offset(0.0F, -11.0F, -4.0F));
         return LayerDefinition.create(mesh, 64, 64);
     }
 }

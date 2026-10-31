@@ -207,6 +207,11 @@ final class ClientProbes {
         dispatcher.register("client.screen", (request, reply) -> {
             Minecraft minecraft = client();
             String open = request.choice("open", "none", "none", "inventory");
+            // A menu is closed as Escape closes it, so the server hears of it too: a placed backpack's
+            // lid shuts when its last viewer does.
+            if (AgentClientVanilla.screen(minecraft) instanceof net.minecraft.client.gui.screens.inventory.AbstractContainerScreen<?>) {
+                player(minecraft).closeContainer();
+            }
             AgentClientVanilla.setScreen(minecraft, switch (open) {
                 case "inventory" -> new net.minecraft.client.gui.screens.inventory.InventoryScreen(player(minecraft));
                 default -> null;

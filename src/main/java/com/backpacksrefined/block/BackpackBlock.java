@@ -5,9 +5,9 @@ import com.backpacksrefined.item.BackpackTier;
 import com.backpacksrefined.menu.BackpackMenu;
 import com.backpacksrefined.platform.BackpackIds;
 import com.backpacksrefined.platform.OpenableBlock;
-import com.backpacksrefined.sound.BackpacksSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.LivingEntity;
@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -43,7 +44,10 @@ import java.util.UUID;
  * backpack takes it back (see {@link BackpackBlockEntity}).
  *
  * <p>It can stand in water, and it floats on still water: with a water source under it and none in it,
- * it sits lower, half sunk into the water (the {@code floating} models), and is shorter.
+ * it sits lower, half sunk into the water, and is shorter.
+ *
+ * <p>The block entity renderer draws it, so the lid can open; the block models are left for the
+ * particles and the item.
  *
  * <p>The overrides are public where Minecraft has them protected or public depending on the version,
  * which compiles against both.
@@ -105,7 +109,23 @@ public class BackpackBlock extends OpenableBlock implements EntityBlock {
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(level, pos, state, placer, stack);
         UUID id = BackpackIds.get(stack);
-        if (id != null && level.getBlockEntity(pos) instanceof BackpackBlockEntity backpack) backpack.setId(id);
+        if (!(level.getBlockEntity(pos) instanceof BackpackBlockEntity backpack)) return;
+        if (id != null) backpack.setId(id);
+        // The placing player's client runs this too, and starts the drop at once; the others hear of it.
+        if (level instanceof ServerLevel) level.blockEvent(pos, this, BackpackBlockEntity.PLACED_EVENT, 0);
+        else backpack.placed();
+    }
+
+    /** Hands the block entity's events (the lid, being set down) to it, as vanilla's container blocks do. */
+    @Override
+    public boolean triggerEvent(BlockState state, Level level, BlockPos pos, int id, int param) {
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        return blockEntity != null && blockEntity.triggerEvent(id, param);
+    }
+
+    @Override
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.INVISIBLE;
     }
 
     @Override
@@ -113,7 +133,7 @@ public class BackpackBlock extends OpenableBlock implements EntityBlock {
         if (!(level.getBlockEntity(pos) instanceof BackpackBlockEntity backpack)) return;
         player.openMenu(new SimpleMenuProvider((containerId, inventory, opener) ->
                 new BackpackMenu(containerId, inventory, backpack), getName()));
-        level.playSound(null, pos, BackpacksSounds.EQUIP, SoundSource.BLOCKS, 1.0F, 1.0F);
+        level.playSound(null, pos, tier.equipSound(), SoundSource.BLOCKS, 1.0F, 1.0F);
     }
 
     /** The dropped backpack takes the placed one's id, and with it its items. */

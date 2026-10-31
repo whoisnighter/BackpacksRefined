@@ -183,7 +183,7 @@ a client answers all three.
 | `client.chat` | `message` | after sending it |
 | `client.hold` | `keys`, `ticks` | the movement state before and after holding those keys for that long |
 | `client.key` | `key`, `down` | after setting one key's state and leaving it there |
-| `client.screen` | `open` (`none`, `inventory`) | which screen is open now |
+| `client.screen` | `open` (`none`, `inventory`) | which screen is open now. An open menu is closed as Escape closes it, telling the server |
 | `client.tooltip` | `item`, `count`, `slot`, `advanced` | the tooltip lines that item produced, as text, with their colours. `slot` reads the stack the player holds (`mainhand`, `offhand` or an inventory index) |
 | `client.click` | `x`, `y`, `button`, `from` (`centre`, `corner`, `top`, `bottom`) | after pressing and releasing a mouse button on the open screen: which child was under the point and whether the press was taken |
 | `client.scroll` | `x`, `y`, `from` as `client.click`, `amount` (wheel notches, positive down the page) | after turning the wheel over the open screen: whether the screen took it |

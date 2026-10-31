@@ -187,6 +187,10 @@ tasks.named<ProcessResources>("processResources") {
     if (!atLeast("1.20.5")) filesMatching("data/*/recipe/*.json") {
         filter { line -> line.replace("\"id\":", "\"item\":") }
     }
+    // Wolf armor came in 1.20.5, and with it its equip sound; before, the upper tiers equip as leather.
+    if (!atLeast("1.20.5")) filesMatching("assets/*/sounds.json") {
+        filter { line -> line.replace("item.armor.equip_wolf", "item.armor.equip_leather") }
+    }
     if (!atLeast("1.21")) {
         filesMatching("data/*/recipe/**") { path = path.replace("/recipe/", "/recipes/") }
         filesMatching("data/*/loot_table/**") { path = path.replace("/loot_table/", "/loot_tables/") }

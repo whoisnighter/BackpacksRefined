@@ -16,7 +16,8 @@
   "environment": "*",
   "entrypoints": {
     "main": ["com.backpacksrefined.fabric.BackpacksRefinedFabric"],
-    "client": ["com.backpacksrefined.client.fabric.BackpacksRefinedFabricClient"]
+    "client": ["com.backpacksrefined.client.fabric.BackpacksRefinedFabricClient"],
+    "modmenu": ["com.backpacksrefined.client.fabric.BackpacksRefinedModMenu"]
   },
   "mixins": [
     "backpacksrefined.mixins.json",
@@ -29,6 +30,7 @@
     "fabric-api": "*"
   },
   "suggests": {
-    "modmenu": "*"
+    "modmenu": "*",
+    "cloth-config": "*"
   }
 }

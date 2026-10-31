@@ -1,7 +1,6 @@
 package com.backpacksrefined.item;
 
 import com.backpacksrefined.platform.WearableBlockItem;
-import com.backpacksrefined.sound.BackpacksSounds;
 import net.minecraft.world.level.block.Block;
 
 /**
@@ -12,7 +11,7 @@ public class BackpackItem extends WearableBlockItem {
     private final BackpackTier tier;
 
     public BackpackItem(BackpackTier tier, Block block, Properties properties) {
-        super(tier.id(), block, BackpacksSounds.EQUIP, properties);
+        super(tier.id(), block, tier.equipSound(), properties);
         this.tier = tier;
     }
 

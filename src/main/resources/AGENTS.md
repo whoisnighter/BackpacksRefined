@@ -56,6 +56,9 @@ below. Its UVs are the entity model's box UVs divided by 4 (64 pixels to 16 unit
 
 `render_type: cutout` is for NeoForge and Forge; the lid's sides have transparent pixels.
 
+The placed block is drawn by its block entity renderer (`src/client/java/com/backpacksrefined/client/AGENTS.md`),
+so these models only draw the item and give the breaking particles. Change the shape in both places.
+
 ## Things that look missing but are not
 
 - **No `equipment/backpack.json`.** The backpack's `equippable` names the equipment asset

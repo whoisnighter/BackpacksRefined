@@ -1,0 +1,43 @@
+name: Check README versions
+
+# README.md's Requirements table prints the versions stonecutter.properties.toml pins, so players know
+# what to install. A bump made by hand moves the build and leaves the table behind, and a wrong version
+# there reaches a player as a crash rather than a failed build. `update_deps.py --check` reads the two
+# files and nothing else, so this needs no network.
+#
+# Its own workflow rather than a job in build.yml, which ignores "**/*.md" and so would never run on a
+# pull request that only edits README.md. The two path lists are written out twice because GitHub
+# Actions does not read YAML anchors; keep them the same.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - stonecutter.properties.toml
+      - README.md
+      - .github/scripts/update_deps.py
+      - .github/workflows/check-readme-versions.yml
+  pull_request:
+    paths:
+      - stonecutter.properties.toml
+      - README.md
+      - .github/scripts/update_deps.py
+      - .github/workflows/check-readme-versions.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Check README versions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+
+      - name: Check the versions README.md prints
+        run: python .github/scripts/update_deps.py --check

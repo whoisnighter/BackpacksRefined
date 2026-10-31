@@ -117,8 +117,16 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:$loaderVersion")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
 
-    // Development only, never a dependency of the jar.
-    findProperty("deps.modmenu")?.let { modDependency("localRuntime", "maven.modrinth:modmenu:$it") }
+    // Optional at runtime: the config screen is built with Cloth Config and ModMenu opens it. Compiled
+    // against and in the dev runs, never a dependency of the jar.
+    findProperty("deps.modmenu")?.let {
+        modDependency("compileOnly", "maven.modrinth:modmenu:$it")
+        modDependency("localRuntime", "maven.modrinth:modmenu:$it")
+    }
+    findProperty("deps.cloth_config")?.let {
+        modDependency("compileOnly", "maven.modrinth:cloth-config:$it")
+        modDependency("localRuntime", "maven.modrinth:cloth-config:$it")
+    }
 }
 
 // What fabric.mod.json is expanded with, from stonecutter.properties.toml.

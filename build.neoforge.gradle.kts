@@ -37,6 +37,19 @@ neoForge {
     version = neoForgeVersion
 }
 
+// A mod in the dev runs that the published metadata never names. Only runtimeClasspath extends it,
+// which no published variant is built from.
+val localRuntime: Configuration = configurations.maybeCreate("localRuntime")
+configurations.named("runtimeClasspath") { extendsFrom(localRuntime) }
+
+dependencies {
+    // Optional at runtime: the config screen is built with Cloth Config. Compiled against and in the
+    // dev runs, never a dependency of the jar.
+    val clothConfig = "maven.modrinth:cloth-config:${property("deps.cloth_config")}"
+    compileOnly(clothConfig)
+    localRuntime(clothConfig)
+}
+
 extra["node.loader"] = loader.id
 extra["node.manifest"] = "META-INF/neoforge.mods.toml"
 extra["node.clientSources"] =

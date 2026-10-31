@@ -32,6 +32,17 @@ in `stonecutter.properties.toml`. CI finds it from that table.
 `["<minecraft>"]` (shared by its loaders), then `[<loader>."<minecraft>"]`. A key belongs in exactly one
 table a node reads. Plugin versions are in `settings.gradle.kts` and `gradle/libs.versions.toml`.
 
+The loader versions there are what each node builds against and the lowest the manifests ask
+players for; they are not bumped along with the mods, so a player can update this mod without
+updating their loader. Mods (Fabric API, Cloth Config, Mod Menu) are the newest for each node and are
+asked for at any version. See the top of `stonecutter.properties.toml`.
+
+`.github/scripts/update_deps.py` keeps the mods current: a daily workflow (`update-deps.yml`) opens one
+pull request that moves them to the newest upload for each node, moves each loader's `deps.*_latest`
+(never the pin) and prints the loader changelogs, and rewrites README.md's Requirements table to match.
+`--dry-run` reports without writing. `--check` (run by `check-readme-versions.yml`, no network) fails
+when README.md does not name a pinned version, so a bump made by hand updates the table too.
+
 Java follows Minecraft (`build-logic/.../Nodes.kt`): 25 from 26.1, 21 from 1.20.5, 17 before. Gradle
 itself runs on 25 (`gradle/gradle-daemon-jvm.properties`).
 

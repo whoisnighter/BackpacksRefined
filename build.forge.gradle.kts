@@ -40,6 +40,14 @@ legacyForge {
     version = "${sc.current.version}-$forgeVersion"
 }
 
+// `modLocalRuntime`: a remapped mod in the dev runs that the published metadata never names. Only
+// runtimeClasspath extends it, which no published variant is built from.
+val localRuntime: Configuration = configurations.maybeCreate("localRuntime")
+configurations.named("runtimeClasspath") { extendsFrom(localRuntime) }
+obfuscation {
+    createRemappingConfiguration(localRuntime)
+}
+
 extra["node.loader"] = loader.id
 extra["node.manifest"] = "META-INF/mods.toml"
 extra["node.clientSources"] =
@@ -86,6 +94,11 @@ dependencies {
     val mixinExtras = property("deps.mixinextras") as String
     compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:$mixinExtras")!!)
     implementation(jarJar("io.github.llamalad7:mixinextras-forge:$mixinExtras")!!)
+    // Optional at runtime: the config screen is built with Cloth Config, remapped from SRG names like
+    // any Forge mod. Compiled against and in the dev runs, never a dependency of the jar.
+    val clothConfig = "maven.modrinth:cloth-config:${property("deps.cloth_config")}"
+    "modCompileOnly"(clothConfig)
+    "modLocalRuntime"(clothConfig)
 }
 
 tasks.processResources {

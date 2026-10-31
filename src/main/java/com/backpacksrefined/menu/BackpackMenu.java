@@ -18,12 +18,18 @@ public class BackpackMenu extends ChestMenu {
     private static final MenuType<?>[] TYPES = {MenuType.GENERIC_9x1, MenuType.GENERIC_9x2, MenuType.GENERIC_9x3,
             MenuType.GENERIC_9x4, MenuType.GENERIC_9x5, MenuType.GENERIC_9x6};
 
+    private final Container backpack;
+
     public BackpackMenu(int containerId, Inventory inventory, Container backpack) {
         this(containerId, inventory, backpack, rows(backpack));
     }
 
     private BackpackMenu(int containerId, Inventory inventory, Container backpack, int rows) {
         super(TYPES[rows - 1], containerId, inventory, new Padded(backpack, rows * 9), rows);
+        this.backpack = backpack;
+        // The chest menu tells the padded container, which does not pass it on; the placed backpack
+        // counts who has it open, for its lid. A player is what both versions of startOpen take.
+        backpack.startOpen(inventory.player);
         for (int i = 0; i < rows * 9; i++) {
             Slot chest = slots.get(i);
             Slot slot = i < backpack.getContainerSize()
@@ -32,6 +38,12 @@ public class BackpackMenu extends ChestMenu {
             slot.index = i;
             slots.set(i, slot);
         }
+    }
+
+    @Override
+    public void removed(Player player) {
+        super.removed(player);
+        backpack.stopOpen(player);
     }
 
     private static int rows(Container backpack) {
