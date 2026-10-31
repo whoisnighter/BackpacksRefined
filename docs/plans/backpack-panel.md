@@ -15,8 +15,11 @@ Done, on every node (compiled and `check`ed on all; played on 26.3-fabric only,
 - **Storage.** `storage/BackpackStorage` and `BackpackContents`, saved by `platform/BackpackSavedData`.
   The id is in the item's custom data (`platform/BackpackIds`), not a component of the mod's own: no
   registry entry on three loaders, and the creative screen keeps it.
-- **The plain backpack holds 27.** `BackpackItem.SIZE`; no other tier yet.
-- **A placed backpack opens with a right click**, as vanilla's three-row chest (see
+- **Four tiers**, each its own item and block (`item/BackpackTier`): backpack 8, iron 16, diamond 24,
+  netherite 32 (fire and lava resistant). Only in the creative tabs and `/give` for now: no recipe or
+  upgrade yet. The new tiers' textures are copies of the leather ones, to be replaced. All equip with
+  the leather sound for now.
+- **A placed backpack opens with a right click**, as vanilla's chest with a row per nine slots (see
   [Placed backpacks](#placed-backpacks)).
 - **The panel** beside every container screen but the creative one, with left and right clicks, shift
   click into the inventory and Alt and a click to store a menu slot. Payloads, validation and click
@@ -27,14 +30,16 @@ Where it differs from what follows, the code is right and this plan was updated:
 - The panel is hung on screens by one mixin into `AbstractContainerScreen`
   (`client/mixin/AbstractContainerScreenMixin`), not by each loader's screen events: one code path per
   version instead of three loaders' events per version. It still never touches a menu.
-- The panel has nine rows and a column for each nine slots, so it never scrolls: 27 slots are three
-  columns, 63 would be seven. Nine columns do not fit beside the inventory at the usual GUI scales.
-- It sits left of the screen, or right when something moved the screen off centre (the recipe book,
-  another mod's side panel), found from the screen's position rather than from the recipe book.
+- The panel sits left of the screen's image, or right when there is no room on the left, with its
+  bottom lined up with the image's (where every container screen draws the player's inventory). It
+  always shows the largest tier's 32 slots, four columns of eight rows, exactly the inventory screen's
+  height, and never scrolls; the slots past the worn tier's are darkened and do nothing. Its window is
+  drawn pixel for pixel as vanilla's container textures draw theirs, corners included. Nine columns do not fit beside the inventory at the usual GUI scales.
+  The wheel over it is swallowed, so the screen behind does not scroll.
 - Changed slots are sent after each click, not gathered for the end of the tick, and there is no
   revision: each click answers at once with what changed, and a snapshot on opening covers the rest.
 
-Not done yet: tiers and smithing upgrades, admin commands, Trinkets and Curios, JEI, EMI and REI
+Not done yet: a way to get the upper tiers (recipes or smithing upgrades), their own textures and equip sound, admin commands, Trinkets and Curios, JEI, EMI and REI
 exclusion areas, the config (blocklist, side, toggle key), the dupe scripts under [Testing](#testing),
 and a creative player breaking a full placed backpack (it drops nothing, as for any block; the items
 stay in storage under its id).
@@ -47,9 +52,11 @@ move and cannot be duplicated by placing and breaking. The block entity is a `Co
 stored items, for its menu and for hoppers; from 1.21.5 it overrides `preRemoveSideEffects`, which
 would otherwise drop a container's items when its block goes.
 
-Its menu is vanilla's `ChestMenu` with `MenuType.GENERIC_9x3` (`menu/BackpackMenu`), so the client
-opens vanilla's chest screen and every mod that knows it (sorting, recipe viewers) knows this one.
-Only on the server are its 27 slots swapped for ones that refuse what may not go inside another item.
+Its menu is vanilla's `ChestMenu` with a row for each nine slots (`menu/BackpackMenu`; one row for the
+plain backpack's 8, four for netherite's 32), so the client opens vanilla's chest screen and every mod that knows it (sorting, recipe viewers)
+knows this one. Only on the server are its slots swapped for ones that refuse what may not go inside
+another item; the slots past the backpack's size that fill out the last row hold nothing and take
+nothing.
 
 ## Scope
 
@@ -115,6 +122,11 @@ Not tested in game, but every dupe of that shape needs two copies, and this desi
   config change ever shrinks a tier, the overflow is dropped at the player's feet, never deleted.
 - **Saving** rides on the vanilla world save (`setDirty()`), never a file write per click. Start with
   one file; split per backpack later only if servers report large files.
+- **Schema versioning.** The file carries `schema` (the mod's layout, 1 so far) and `data_version`
+  (the game's). Loading migrates an older layout step by step (`storage/StorageSchema`) and runs
+  vanilla's item fixer when the game was older. Unreadable data (a newer schema, damage) is kept and
+  saved back as it was, with every backpack locked, never replaced by an empty storage. The schema only
+  goes up for a layout a released version wrote; before release the layout changes in place.
 - **Orphans** (backpack burnt or in the void): never deleted automatically. Each entry records when
   it was last accessed; admin commands `/backpacksrefined list | restore <uuid> | prune <days>` handle them.
 - **Copies sharing a UUID** (creative middle-click, `/give` with components): they share one inventory.
@@ -122,22 +134,25 @@ Not tested in game, but every dupe of that shape needs two copies, and this desi
 
 ## Tiers
 
-Each tier is its own item. The sizes below are decided.
+Each tier is its own item and block (`item/BackpackTier`), two rows of four more than the one before,
+so the largest fills the panel's four columns at the inventory screen's height. Decided; there is no
+gold tier.
 
 | Tier | Slots | Notes |
 |------|-------|-------|
-| Backpack | 27 | the existing `BackpackItem` |
-| Iron | 36 | |
-| Gold | 45 | |
-| Diamond | 54 | |
-| Netherite | 63 | fire and lava resistant, like netherite gear |
+| Backpack | 8 | leather |
+| Iron | 16 | |
+| Diamond | 24 | |
+| Netherite | 32 | fire and lava resistant, like netherite gear |
 
-- `BackpackItem` takes its tier in the constructor; size and fire resistance come from the tier.
+- `BackpackItem` and `BackpackBlock` take their tier in the constructor; size and fire resistance come
+  from the tier. A placed backpack's block entity reads its size from its block.
+- The server opens only the worn tier's slots: if the stored contents are larger (a copy of the id
+  that was a larger tier), the slots past it are left as they are and out of reach.
 - **Upgrades** happen at the smithing table, one tier at a time, with an upgrade template plus the
   material. The smithing transform copies the item's components (its NBT tag on 1.20.1), so the UUID
   and with it the contents carry over. The size grows on the next access.
-- The panel's grid has a fixed column count; taller tiers scroll instead of growing past the
-  screen's image height.
+- The panel always shows 32 slots; a smaller tier's missing slots are darkened and locked.
 
 ## Worn slots
 
@@ -305,5 +320,4 @@ Dupe scenarios to script, each expecting the total item count to stay unchanged:
 ## Open questions
 
 - Upgrade recipe costs: which template and how much material each tier takes.
-- A placed backpack of a larger tier: vanilla's chest menus stop at six rows (54), so 63 slots need a
-  menu of the mod's own.
+- How the upper tiers are got: crafted, or upgraded at the smithing table (with or without a template).

@@ -38,7 +38,7 @@ public final class BackpacksRefinedForge {
         });
         Network.register();
         modBus.addListener((BuildCreativeModeTabContentsEvent event) -> {
-            if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) event.accept(BackpacksItems.backpack());
+            if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) BackpacksItems.all().forEach(event::accept);
         });
         if (FMLEnvironment.dist == Dist.CLIENT) BackpacksRefinedForgeClient.initialize(modBus);
     }

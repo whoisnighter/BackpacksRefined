@@ -22,7 +22,7 @@ Holding items and tiers have their own plan: [backpack-panel.md](backpack-panel.
   water itself, it floats: it sits 3 pixels lower, half in the water, and its shape is 8 pixels tall.
   It changes as the water under it comes and goes. It does not bob yet (see the animations below).
 - **Recipe.** Eight leather around a chest.
-- **Holding items.** 27 slots, not the old mod's way: worn, in a panel beside the inventory and every
+- **Holding items.** 8 to 32 slots by tier (leather, iron, diamond, netherite; creative only for now), not the old mod's way: worn, in a panel beside the inventory and every
   container screen; placed, a right click opens them as a chest. See
   [backpack-panel.md](backpack-panel.md), which has what is left (tiers, accessory slots, ...).
 

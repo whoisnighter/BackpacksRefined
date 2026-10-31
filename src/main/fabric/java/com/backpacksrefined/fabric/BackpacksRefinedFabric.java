@@ -3,6 +3,7 @@ package com.backpacksrefined.fabric;
 import com.backpacksrefined.BackpacksRefined;
 import com.backpacksrefined.block.BackpacksBlockEntities;
 import com.backpacksrefined.block.BackpacksBlocks;
+import com.backpacksrefined.item.BackpackTier;
 import com.backpacksrefined.item.BackpacksCreativeTabs;
 import com.backpacksrefined.item.BackpacksItems;
 import com.backpacksrefined.platform.CreativeTabs;
@@ -22,7 +23,7 @@ public final class BackpacksRefinedFabric implements ModInitializer {
         BackpacksBlockEntities.register((id, type) -> Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, id, type));
         BackpacksItems.register((id, item) -> Registry.register(BuiltInRegistries.ITEM, id, item));
         BackpacksCreativeTabs.register((id, tab) -> Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, id, tab), CreativeTabs::builder);
-        CreativeTabs.addToTools(BackpacksItems::backpack);
+        for (BackpackTier tier : BackpackTier.values()) CreativeTabs.addToTools(() -> BackpacksItems.backpack(tier));
         Network.register();
     }
 }

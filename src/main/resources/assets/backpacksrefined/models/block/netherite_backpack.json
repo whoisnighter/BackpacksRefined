@@ -1,0 +1,7 @@
+{
+  "parent": "backpacksrefined:block/backpack",
+  "textures": {
+    "backpack": "backpacksrefined:block/netherite_backpack",
+    "particle": "backpacksrefined:block/netherite_backpack"
+  }
+}

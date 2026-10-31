@@ -42,11 +42,11 @@ public final class Loader {
 
     /** A block entity type for {@code block}. Its constructor is public from 26.1; before, Fabric API builds it. */
     public static <T extends BlockEntity> BlockEntityType<T> blockEntityType(BiFunction<BlockPos, BlockState, T> factory,
-            Block block) {
+            Block... blocks) {
         //? if >=26.1 {
-        return new BlockEntityType<>(factory::apply, Set.of(block));
+        return new BlockEntityType<>(factory::apply, Set.of(blocks));
         //?} else {
-        /*return FabricBlockEntityTypeBuilder.create(factory::apply, block).build();
+        /*return FabricBlockEntityTypeBuilder.create(factory::apply, blocks).build();
         *///?}
     }
 }

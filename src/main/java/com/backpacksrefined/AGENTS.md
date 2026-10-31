@@ -8,9 +8,9 @@ outside `platform/` and `mixin/` has a version conditional (`checkVersionSeam`).
 | `BackpacksRefined` | The common entrypoint each loader's mod class calls, the mod id, `id(path)` |
 | `sound/` | `BackpacksSounds`: the sound events. What they play is in `assets/backpacksrefined/sounds.json` |
 | `block/` | `BackpacksBlocks` and `BackpacksBlockEntities` (the registries), `BackpackBlock`, the placed backpack, and `BackpackBlockEntity`, which keeps its id |
-| `item/` | `BackpacksItems` (the registry), `BackpackItem`, and `BackpacksCreativeTabs`, the mod's own tab |
-| `storage/` | `BackpackStorage`: every backpack's items, by id, saved with the world; `BackpackContents`, one backpack's |
-| `menu/` | `BackpackMenu`: a placed backpack's menu, vanilla's three-row chest menu |
+| `item/` | `BackpacksItems` (the registry), `BackpackTier` (the four tiers and their sizes), `BackpackItem`, and `BackpacksCreativeTabs`, the mod's own tab |
+| `storage/` | `BackpackStorage`: every backpack's items, by id, saved with the world; `BackpackContents`, one backpack's; `StorageSchema`, the saved layout's version and its migrations |
+| `menu/` | `BackpackMenu`: a placed backpack's menu, vanilla's chest menu with a row per nine slots |
 | `network/` | `BackpackNetwork`: the panel's messages, their channels, and where each is handled |
 | `panel/` | `PanelServer`: the server side of the worn backpack's panel |
 | `platform/` | Where versions differ, and the loader seam (`platform/AGENTS.md`) |
@@ -63,6 +63,12 @@ The plan, and where the code went its own way, is
   sends back the slots that changed.
 - Each loader carries the messages in its own way (`platform/Network`, and `client/platform/ClientNetwork`
   for the client half); `BackpackNetwork` says what they are and who handles them.
+- The saved data carries `schema` (the mod's layout) and `data_version` (the game's), as described
+  in `storage/StorageSchema`. Loading runs the migration steps from the saved schema up, and vanilla's
+  data fixer over the items when the game was older. Data that still cannot be read (a newer schema,
+  damage) is kept as it was and saved back unchanged, and every backpack is locked meanwhile, so it is
+  never overwritten by an empty storage. **Until a release ships a layout, change it in place and do
+  not bump the schema**; `CHANGELOG.md` says what has shipped.
 - `tools/agent/gameplay/storage.jsonl` checks a placed backpack's chest screen, breaking and wearing it,
   and the panel's clicks.
 - The block's display name is `block.backpacksrefined.backpack` on every version: from 1.21.2 the item

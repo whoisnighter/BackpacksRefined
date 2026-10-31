@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=north,floating=false": {
+      "model": "backpacksrefined:block/netherite_backpack"
+    },
+    "facing=east,floating=false": {
+      "model": "backpacksrefined:block/netherite_backpack",
+      "y": 90
+    },
+    "facing=south,floating=false": {
+      "model": "backpacksrefined:block/netherite_backpack",
+      "y": 180
+    },
+    "facing=west,floating=false": {
+      "model": "backpacksrefined:block/netherite_backpack",
+      "y": 270
+    },
+    "facing=north,floating=true": {
+      "model": "backpacksrefined:block/netherite_backpack_floating"
+    },
+    "facing=east,floating=true": {
+      "model": "backpacksrefined:block/netherite_backpack_floating",
+      "y": 90
+    },
+    "facing=south,floating=true": {
+      "model": "backpacksrefined:block/netherite_backpack_floating",
+      "y": 180
+    },
+    "facing=west,floating=true": {
+      "model": "backpacksrefined:block/netherite_backpack_floating",
+      "y": 270
+    }
+  }
+}

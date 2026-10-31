@@ -1,6 +1,7 @@
 package com.backpacksrefined.storage;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
@@ -17,19 +18,29 @@ public final class BackpackContents extends SimpleContainer {
     private record SlotItem(int slot, ItemStack item) {
         static final Codec<SlotItem> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.INT.fieldOf("slot").forGetter(SlotItem::slot),
-                ItemStack.CODEC.fieldOf("item").forGetter(SlotItem::item)
+                ItemStack.CODEC.fieldOf(StorageSchema.ITEM).forGetter(SlotItem::item)
         ).apply(instance, SlotItem::new));
     }
 
-    static final Codec<BackpackContents> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    /** The fields a backpack's entry in the storage has besides its id: its size and its filled slots. */
+    static final MapCodec<BackpackContents> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.INT.fieldOf("size").forGetter(BackpackContents::getContainerSize),
-            SlotItem.CODEC.listOf().fieldOf("items").forGetter(BackpackContents::filled)
+            SlotItem.CODEC.listOf().fieldOf(StorageSchema.ITEMS).forGetter(BackpackContents::filled)
     ).apply(instance, BackpackContents::new));
 
     private Runnable onChange = () -> { };
+    /** Whether it stands in for contents that could not be read: always empty, and takes nothing. */
+    private boolean locked;
 
     public BackpackContents(int size) {
         super(size);
+    }
+
+    /** Empty contents that take nothing, for a backpack whose saved contents could not be read. */
+    static BackpackContents locked(int size) {
+        BackpackContents contents = new BackpackContents(size);
+        contents.locked = true;
+        return contents;
     }
 
     private BackpackContents(int size, List<SlotItem> items) {
@@ -62,7 +73,12 @@ public final class BackpackContents extends SimpleContainer {
     /** A backpack holds nothing that refuses to go inside another item: backpacks, shulker boxes. */
     @Override
     public boolean canPlaceItem(int slot, ItemStack stack) {
-        return stack.getItem().canFitInsideContainerItems();
+        return !locked && stack.getItem().canFitInsideContainerItems();
+    }
+
+    @Override
+    public void setItem(int slot, ItemStack stack) {
+        if (!locked) super.setItem(slot, stack);
     }
 
     @Override

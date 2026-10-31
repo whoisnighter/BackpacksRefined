@@ -1,6 +1,6 @@
 package com.backpacksrefined.block;
 
-import com.backpacksrefined.item.BackpackItem;
+import com.backpacksrefined.item.BackpackTier;
 import com.backpacksrefined.platform.IdBlockEntity;
 import com.backpacksrefined.storage.BackpackContents;
 import com.backpacksrefined.storage.BackpackStorage;
@@ -19,10 +19,7 @@ import java.util.UUID;
  * its own menu and for hoppers; on the client it is empty.
  */
 public class BackpackBlockEntity extends IdBlockEntity implements Container {
-    /** The plain backpack's; placed backpacks of other sizes will need a size of their own. */
-    public static final int SIZE = BackpackItem.SIZE;
-
-    private static final BackpackContents NONE = new BackpackContents(SIZE);
+    private static final BackpackContents NONE = new BackpackContents(BackpackTier.MAX_SIZE);
 
     public BackpackBlockEntity(BlockPos pos, BlockState state) {
         super(BackpacksBlockEntities.backpack(), pos, state);
@@ -36,12 +33,12 @@ public class BackpackBlockEntity extends IdBlockEntity implements Container {
             id = UUID.randomUUID();
             setId(id);
         }
-        return BackpackStorage.of(server.getServer()).contents(id, SIZE);
+        return BackpackStorage.of(server.getServer()).contents(id, getContainerSize());
     }
 
     @Override
     public int getContainerSize() {
-        return SIZE;
+        return getBlockState().getBlock() instanceof BackpackBlock block ? block.tier().size() : BackpackTier.LEATHER.size();
     }
 
     @Override
@@ -74,7 +71,7 @@ public class BackpackBlockEntity extends IdBlockEntity implements Container {
 
     @Override
     public boolean canPlaceItem(int slot, ItemStack stack) {
-        return stack.getItem().canFitInsideContainerItems();
+        return contents().canPlaceItem(slot, stack);
     }
 
     /** Menus change a stack in place and then call this, so the storage is marked to be saved too. */

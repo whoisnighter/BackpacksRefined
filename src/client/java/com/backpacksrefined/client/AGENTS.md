@@ -46,7 +46,10 @@ the mixin found its target (`injectors.defaultRequire` is 1, so a missing target
 ## The panel
 
 `BackpackPanel` draws the worn backpack's slots beside any container screen but the creative one, in
-vanilla's look drawn with plain fills (no texture, so no blit API to differ between versions). The
+vanilla's look drawn with plain fills (no texture, so no blit API to differ between versions): left
+of the screen's image, bottoms lined up, always the largest tier's 32 slots in four columns of eight
+(the inventory screen's height), with those past the worn tier's darkened and locked. The window's
+outline and corners copy vanilla's container textures pixel for pixel. The
 mixin calls it from the screen's `init`, `removed`, drawing and mouse methods:
 
 - **Drawing** comes after the screen's contents and before the carried stack: at the end of
@@ -54,7 +57,9 @@ mixin calls it from the screen's `init`, `removed`, drawing and mouse methods:
   after, in a later layer; before 1.21.6 at the end of `render`, where the carried stack sits further
   forward. The tooltip is set for the end of the frame from 1.21.6, drawn at once before.
 - **The mouse**: a press, release or drag over the panel is taken before the screen sees it, so it never
-  counts as a click outside and drops the carried stack. Alt and a press on a filled menu slot stores
+  counts as a click outside and drops the carried stack. So is the wheel over it, so the screen behind does not scroll:
+  the screen has a `mouseScrolled` of its own from 1.21.2, and before that the mixin adds one over the
+  inherited default (with a horizontal amount from 1.20.2). Alt and a press on a filled menu slot stores
   it. The button numbers are the game's own (`InputConstants`): 26.3 moved to SDL, where left is 1.
 - **Sync**: while the screen is open, the panel asks the server for the contents once a backpack is
   worn and drops them once it is not, checked every frame against the chest slot.

@@ -39,7 +39,7 @@ public final class Loader {
 
     /** A block entity type for {@code block}, from vanilla's builder. */
     public static <T extends BlockEntity> BlockEntityType<T> blockEntityType(BiFunction<BlockPos, BlockState, T> factory,
-            Block block) {
-        return BlockEntityType.Builder.of(factory::apply, block).build(null);
+            Block... blocks) {
+        return BlockEntityType.Builder.of(factory::apply, blocks).build(null);
     }
 }

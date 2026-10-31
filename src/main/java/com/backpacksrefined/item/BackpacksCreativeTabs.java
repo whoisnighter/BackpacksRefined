@@ -11,7 +11,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 /**
- * The mod's own creative tab, with the backpack in it. Its icon is the backpack's flat sprite, though
+ * The mod's own creative tab, with every tier's backpack in it. Its icon is the backpack's flat sprite, though
  * the backpack itself is drawn in 3D in every inventory: see {@link FlatIcon}.
  *
  * <p>Each loader starts a tab differently, so its mod class hands in the builder: Fabric API's on
@@ -27,7 +27,7 @@ public final class BackpacksCreativeTabs {
         registry.accept(BACKPACKS_ID, builder.get()
                 .title(Component.translatable("itemGroup." + BackpacksRefined.MOD_ID))
                 .icon(() -> FlatIcon.of(new ItemStack(BackpacksItems.backpack())))
-                .displayItems((parameters, output) -> output.accept(BackpacksItems.backpack()))
+                .displayItems((parameters, output) -> BackpacksItems.all().forEach(output::accept))
                 .build());
     }
 }

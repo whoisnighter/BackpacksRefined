@@ -1,6 +1,9 @@
 {
   "itemGroup.backpacksrefined": "Backpacks Refined",
   "block.backpacksrefined.backpack": "Ba lô",
+  "block.backpacksrefined.iron_backpack": "Ba lô sắt",
+  "block.backpacksrefined.diamond_backpack": "Ba lô kim cương",
+  "block.backpacksrefined.netherite_backpack": "Ba lô netherite",
   "container.backpacksrefined.backpack": "Ba lô",
   "subtitles.backpacksrefined.item.backpack.equip": "Đeo ba lô",
   "modmenu.descriptionTranslation.backpacksrefined": "Mod ba lô đơn giản và chân thực: đeo ba lô ở ô giáp ngực hoặc đặt xuống như một chiếc rương, không cần thêm phím tắt, menu hay ô đồ."

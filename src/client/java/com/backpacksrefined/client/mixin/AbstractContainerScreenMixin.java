@@ -24,13 +24,16 @@ import net.minecraft.client.input.MouseButtonEvent;
  * <p>Where versions differ: the contents are drawn by {@code extractContents} from 26.1 and by
  * {@code renderContents} from 1.21.6; before, the whole screen is one {@code render}, and the panel is
  * drawn at its end, under the carried stack, which is drawn further forward. The mouse methods take a
- * {@code MouseButtonEvent} from 1.21.9, and the modifier keys come with it.
+ * {@code MouseButtonEvent} from 1.21.9, and the modifier keys come with it. The screen has a wheel
+ * method of its own from 1.21.2; before, the mixin adds one over the inherited default, which takes a
+ * horizontal amount too from 1.20.2.
  */
 @Mixin(AbstractContainerScreen.class)
 public abstract class AbstractContainerScreenMixin extends Screen {
     @Shadow protected int leftPos;
     @Shadow protected int topPos;
     @Shadow protected int imageWidth;
+    @Shadow protected int imageHeight;
     @Shadow protected Slot hoveredSlot;
 
     protected AbstractContainerScreenMixin(Component title) {
@@ -59,8 +62,28 @@ public abstract class AbstractContainerScreenMixin extends Screen {
     /*@Inject(method = "render", at = @At("TAIL"))
     *///?}
     private void backpacksrefined$draw(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
-        BackpackPanel.render(backpacksrefined$self(), graphics, mouseX, mouseY, leftPos, topPos, imageWidth);
+        BackpackPanel.render(backpacksrefined$self(), graphics, mouseX, mouseY, leftPos, topPos, imageWidth, imageHeight);
     }
+
+    //? if >=1.21.2 {
+    @Inject(method = "mouseScrolled", at = @At("HEAD"), cancellable = true)
+    private void backpacksrefined$scroll(double mouseX, double mouseY, double scrollX, double scrollY,
+            CallbackInfoReturnable<Boolean> cir) {
+        if (BackpackPanel.mouseScrolled(backpacksrefined$self(), mouseX, mouseY, scrollY)) cir.setReturnValue(true);
+    }
+    //?} else if >=1.20.2 {
+    /*@Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        return BackpackPanel.mouseScrolled(backpacksrefined$self(), mouseX, mouseY, scrollY)
+                || super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    }
+    *///?} else {
+    /*@Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
+        return BackpackPanel.mouseScrolled(backpacksrefined$self(), mouseX, mouseY, amount)
+                || super.mouseScrolled(mouseX, mouseY, amount);
+    }
+    *///?}
 
     //? if >=1.21.9 {
     @Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true)

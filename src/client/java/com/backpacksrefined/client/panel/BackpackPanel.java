@@ -3,6 +3,7 @@ package com.backpacksrefined.client.panel;
 import com.backpacksrefined.client.platform.ClientNetwork;
 import com.backpacksrefined.client.platform.PanelGraphics;
 import com.backpacksrefined.item.BackpackItem;
+import com.backpacksrefined.item.BackpackTier;
 import com.backpacksrefined.network.BackpackNetwork;
 import com.backpacksrefined.network.BackpackNetwork.PanelClick;
 import com.backpacksrefined.network.BackpackNetwork.PanelContents;
@@ -16,6 +17,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -29,14 +31,17 @@ import java.util.List;
  * changed, so other mods see the menus they expect. Every click goes to the server, which answers with
  * the slots that changed; this shows what the server last sent and nothing else.
  *
- * <p>It sits left of the screen, or right when something already moved the screen right (the recipe
- * book, or another mod's side panel). Nine rows, and a column for each nine slots.
+ * <p>It sits left of the screen's image, or right when there is no room on the left. It always shows the
+ * largest tier's 32 slots, four columns of eight rows, as tall as the player's inventory screen, and
+ * darkens and locks those past the worn backpack's tier. Its bottom lines up with the image's, where
+ * every container screen draws the player's inventory.
  */
 public final class BackpackPanel {
     private static final int SLOT = 18;
-    private static final int ROWS = 9;
+    private static final int COLUMNS = 4;
     private static final int PADDING = 7;
-    private static final int TITLE = 11;
+    /** Room above the slots for the title. */
+    private static final int HEADER = 15;
     private static final int GAP = 2;
 
     private static final int BACKGROUND = 0xFFC6C6C6;
@@ -46,6 +51,7 @@ public final class BackpackPanel {
     private static final int SLOT_DARK = 0xFF373737;
     private static final int SLOT_FILL = 0xFF8B8B8B;
     private static final int HIGHLIGHT = 0x80FFFFFF;
+    private static final int LOCKED = 0x80000000;
     private static final int TITLE_COLOR = 0xFF404040;
 
     private static AbstractContainerScreen<?> screen;
@@ -60,6 +66,7 @@ public final class BackpackPanel {
     private static int top;
     private static int width;
     private static int height;
+    private static int gridTop;
 
     private BackpackPanel() { }
 
@@ -120,32 +127,27 @@ public final class BackpackPanel {
         return on == screen && requested && !stacks.isEmpty();
     }
 
-    /** Places the panel beside the screen's image, given where the screen is this frame. */
-    private static void layout(AbstractContainerScreen<?> on, int leftPos, int topPos, int imageWidth) {
-        int columns = (stacks.size() + ROWS - 1) / ROWS;
-        width = PADDING * 2 + columns * SLOT;
-        height = TITLE + PADDING * 2 + Math.min(stacks.size(), ROWS) * SLOT;
-        boolean movedRight = leftPos > (on.width - imageWidth) / 2 + 1;
+    private static int rows() {
+        return (BackpackTier.MAX_SIZE + COLUMNS - 1) / COLUMNS;
+    }
+
+    /** Places the panel beside the screen's image, given where the screen is this frame, bottoms lined up. */
+    private static void layout(AbstractContainerScreen<?> on, int leftPos, int topPos, int imageWidth, int imageHeight) {
+        width = PADDING + COLUMNS * SLOT + PADDING;
+        height = HEADER + rows() * SLOT + PADDING;
+        top = topPos + imageHeight - height;
+        gridTop = top + HEADER;
         left = leftPos - width - GAP;
-        if (movedRight || left < 0) left = leftPos + imageWidth + GAP;
-        top = topPos;
+        if (left < 0 && leftPos + imageWidth + GAP + width <= on.width) left = leftPos + imageWidth + GAP;
     }
 
+    /** The backpack slot under the mouse, or -1; a locked slot is none. */
     private static int slotAt(double mouseX, double mouseY) {
-        for (int slot = 0; slot < stacks.size(); slot++) {
-            int x = slotX(slot);
-            int y = slotY(slot);
-            if (mouseX >= x && mouseX < x + SLOT && mouseY >= y && mouseY < y + SLOT) return slot;
-        }
-        return -1;
-    }
-
-    private static int slotX(int slot) {
-        return left + PADDING + (slot / ROWS) * SLOT;
-    }
-
-    private static int slotY(int slot) {
-        return top + TITLE + PADDING + (slot % ROWS) * SLOT;
+        int column = Mth.floor((mouseX - left - PADDING) / SLOT);
+        int row = Mth.floor((mouseY - gridTop) / SLOT);
+        if (column < 0 || column >= COLUMNS || row < 0) return -1;
+        int slot = row * COLUMNS + column;
+        return slot < stacks.size() ? slot : -1;
     }
 
     private static boolean inside(double mouseX, double mouseY) {
@@ -154,20 +156,24 @@ public final class BackpackPanel {
 
     /** Draws the panel, under the carried stack. */
     public static void render(AbstractContainerScreen<?> on, GuiGraphicsExtractor graphics, int mouseX, int mouseY,
-            int leftPos, int topPos, int imageWidth) {
+            int leftPos, int topPos, int imageWidth, int imageHeight) {
         if (on != screen) return;
         sync();
         if (!visible(on)) return;
-        layout(on, leftPos, topPos, imageWidth);
+        layout(on, leftPos, topPos, imageWidth, imageHeight);
         Minecraft minecraft = Minecraft.getInstance();
-        background(graphics);
+        window(graphics);
         PanelGraphics.text(graphics, minecraft.font, Component.translatable("container.backpacksrefined.backpack"),
-                left + PADDING + 1, top + PADDING - 1, TITLE_COLOR);
+                left + PADDING + 1, top + 5, TITLE_COLOR);
         int hovered = slotAt(mouseX, mouseY);
-        for (int slot = 0; slot < stacks.size(); slot++) {
-            int x = slotX(slot);
-            int y = slotY(slot);
-            slot(graphics, x, y);
+        for (int slot = 0; slot < BackpackTier.MAX_SIZE; slot++) {
+            int x = left + PADDING + slot % COLUMNS * SLOT;
+            int y = gridTop + slot / COLUMNS * SLOT;
+            inset(graphics, x, y, SLOT, SLOT);
+            if (slot >= stacks.size()) {
+                PanelGraphics.fill(graphics, x, y, x + SLOT, y + SLOT, LOCKED);
+                continue;
+            }
             ItemStack stack = stacks.get(slot);
             if (!stack.isEmpty()) PanelGraphics.item(graphics, minecraft.font, stack, x + 1, y + 1);
             if (slot == hovered) PanelGraphics.fill(graphics, x + 1, y + 1, x + SLOT - 1, y + SLOT - 1, HIGHLIGHT);
@@ -177,24 +183,48 @@ public final class BackpackPanel {
         }
     }
 
-    /** Vanilla's window: a black outline with its corners cut, a light top and left, a dark bottom and right. */
-    private static void background(GuiGraphicsExtractor graphics) {
-        int right = left + width;
-        int bottom = top + height;
-        PanelGraphics.fill(graphics, left + 1, top, right - 1, bottom, OUTLINE);
-        PanelGraphics.fill(graphics, left, top + 1, right, bottom - 1, OUTLINE);
-        PanelGraphics.fill(graphics, left + 1, top + 1, right - 1, bottom - 1, BACKGROUND);
-        PanelGraphics.fill(graphics, left + 1, top + 1, right - 3, top + 3, LIGHT);
-        PanelGraphics.fill(graphics, left + 1, top + 1, left + 3, bottom - 3, LIGHT);
-        PanelGraphics.fill(graphics, left + 3, bottom - 3, right - 1, bottom - 1, SHADOW);
-        PanelGraphics.fill(graphics, right - 3, top + 3, right - 1, bottom - 1, SHADOW);
+    /**
+     * Vanilla's window, pixel for pixel as its container textures draw it: a black outline whose corners
+     * step in two pixels, a light band along the top and left, a dark one along the bottom and right.
+     */
+    private static void window(GuiGraphicsExtractor graphics) {
+        int w = width;
+        int h = height;
+        pixels(graphics, 1, 2, w - 2, h - 4, BACKGROUND);
+        pixels(graphics, 2, 1, w - 4, 1, BACKGROUND);
+        pixels(graphics, 2, h - 2, w - 4, 1, BACKGROUND);
+        pixels(graphics, 2, 1, w - 5, 1, LIGHT);
+        pixels(graphics, 1, 2, w - 4, 1, LIGHT);
+        pixels(graphics, 1, 3, 2, h - 6, LIGHT);
+        pixels(graphics, 3, 3, 1, 1, LIGHT);
+        pixels(graphics, w - 3, 3, 2, h - 6, SHADOW);
+        pixels(graphics, w - 4, h - 4, 1, 1, SHADOW);
+        pixels(graphics, 3, h - 3, w - 4, 1, SHADOW);
+        pixels(graphics, 3, h - 2, w - 5, 1, SHADOW);
+        pixels(graphics, 2, 0, w - 5, 1, OUTLINE);
+        pixels(graphics, 1, 1, 1, 1, OUTLINE);
+        pixels(graphics, w - 3, 1, 1, 1, OUTLINE);
+        pixels(graphics, 0, 2, 1, h - 5, OUTLINE);
+        pixels(graphics, w - 2, 2, 1, 1, OUTLINE);
+        pixels(graphics, w - 1, 3, 1, h - 5, OUTLINE);
+        pixels(graphics, 1, h - 3, 1, 1, OUTLINE);
+        pixels(graphics, 2, h - 2, 1, 1, OUTLINE);
+        pixels(graphics, w - 2, h - 2, 1, 1, OUTLINE);
+        pixels(graphics, 3, h - 1, w - 5, 1, OUTLINE);
     }
 
-    /** Vanilla's slot: dark top and left, light bottom and right, around the grey square. */
-    private static void slot(GuiGraphicsExtractor graphics, int x, int y) {
-        PanelGraphics.fill(graphics, x, y, x + SLOT - 1, y + SLOT - 1, SLOT_DARK);
-        PanelGraphics.fill(graphics, x + 1, y + 1, x + SLOT, y + SLOT, LIGHT);
-        PanelGraphics.fill(graphics, x + 1, y + 1, x + SLOT - 1, y + SLOT - 1, SLOT_FILL);
+    /** A rectangle of the window, from its top left corner. */
+    private static void pixels(GuiGraphicsExtractor graphics, int x, int y, int w, int h, int color) {
+        PanelGraphics.fill(graphics, left + x, top + y, left + x + w, top + y + h, color);
+    }
+
+    /** Vanilla's sunken slot: dark top and left, light bottom and right, mid grey where they meet. */
+    private static void inset(GuiGraphicsExtractor graphics, int x, int y, int w, int h) {
+        PanelGraphics.fill(graphics, x, y, x + w - 1, y + h - 1, SLOT_DARK);
+        PanelGraphics.fill(graphics, x + 1, y + 1, x + w, y + h, LIGHT);
+        PanelGraphics.fill(graphics, x + 1, y + 1, x + w - 1, y + h - 1, SLOT_FILL);
+        PanelGraphics.fill(graphics, x + w - 1, y, x + w, y + 1, SLOT_FILL);
+        PanelGraphics.fill(graphics, x, y + h - 1, x + 1, y + h, SLOT_FILL);
     }
 
     /**
@@ -207,16 +237,16 @@ public final class BackpackPanel {
             boolean shift, boolean alt, Slot hoveredSlot) {
         pressed = false;
         if (!visible(on)) return false;
+        boolean left = button == InputConstants.MOUSE_BUTTON_LEFT;
         if (inside(mouseX, mouseY)) {
             pressed = true;
             int slot = slotAt(mouseX, mouseY);
-            boolean left = button == InputConstants.MOUSE_BUTTON_LEFT;
             if (slot >= 0 && (left || button == InputConstants.MOUSE_BUTTON_RIGHT)) {
                 ClientNetwork.send(BackpackNetwork.PANEL_CLICK, new PanelClick(containerId, slot, left ? 0 : 1, shift));
             }
             return true;
         }
-        if (alt && button == InputConstants.MOUSE_BUTTON_LEFT && hoveredSlot != null && hoveredSlot.hasItem()) {
+        if (alt && left && hoveredSlot != null && hoveredSlot.hasItem()) {
             ClientNetwork.send(BackpackNetwork.PANEL_STORE, new PanelStore(containerId, hoveredSlot.index));
             pressed = true;
             return true;
@@ -229,5 +259,10 @@ public final class BackpackPanel {
         boolean taken = visible(on) && (pressed || inside(mouseX, mouseY));
         if (release) pressed = false;
         return taken;
+    }
+
+    /** The wheel over the panel goes no further, so the screen behind does not scroll. */
+    public static boolean mouseScrolled(AbstractContainerScreen<?> on, double mouseX, double mouseY, double amount) {
+        return visible(on) && inside(mouseX, mouseY);
     }
 }

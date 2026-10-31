@@ -47,11 +47,11 @@ public final class Loader {
 
     /** A block entity type for {@code block}: NeoForge opens the constructor that replaced the builder in 1.21.2. */
     public static <T extends BlockEntity> BlockEntityType<T> blockEntityType(BiFunction<BlockPos, BlockState, T> factory,
-            Block block) {
+            Block... blocks) {
         //? if >=1.21.2 {
-        return new BlockEntityType<>(factory::apply, Set.of(block));
+        return new BlockEntityType<>(factory::apply, Set.of(blocks));
         //?} else {
-        /*return BlockEntityType.Builder.of(factory::apply, block).build(null);
+        /*return BlockEntityType.Builder.of(factory::apply, blocks).build(null);
         *///?}
     }
 }

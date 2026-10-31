@@ -1,6 +1,9 @@
 {
   "itemGroup.backpacksrefined": "Backpacks Refined",
   "block.backpacksrefined.backpack": "Backpack",
+  "block.backpacksrefined.iron_backpack": "Iron Backpack",
+  "block.backpacksrefined.diamond_backpack": "Diamond Backpack",
+  "block.backpacksrefined.netherite_backpack": "Netherite Backpack",
   "container.backpacksrefined.backpack": "Backpack",
   "subtitles.backpacksrefined.item.backpack.equip": "Backpack equipped",
   "modmenu.descriptionTranslation.backpacksrefined": "A simple, immersive backpack mod: wear a backpack in your chestplate slot or place it down as a container, with no extra keybinds, menus or slots."

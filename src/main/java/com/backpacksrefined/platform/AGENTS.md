@@ -28,6 +28,7 @@ The seam between the mod and everything that differs per node.
 | `BackpackIds` | The id on a backpack: in custom data from 1.20.5, in the tag before; read through a codec from 1.21.5 |
 | `IdBlockEntity` | How a block entity saves (value input and output from 1.21.6, a tag and the registries from 1.20.5, a tag before), and from 1.21.5 not dropping a container's items when removed |
 | `OpenableBlock` | Using a block: `useWithoutItem` from 1.20.5, `use` with the hand before; one success for both sides from 1.21.2; `isClientSide()` a method from 1.21.9 |
+| `DataVersions` | The game's data version, a record component from 1.21.6 and getters before; and vanilla's data fixer run over a saved item stack |
 | `Stacks` | Comparing stacks (components or tags) and writing them to a buffer (a stream codec with the registries from 1.20.5) |
 | `WaterloggableBlock` | 1.21.2 changed `updateShape`'s arguments and passed the tick scheduler apart |
 | `FlatIcon` | Custom model data: a string list from 1.21.4, a number component from 1.20.5, a tag before |

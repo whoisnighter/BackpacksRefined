@@ -1,7 +1,8 @@
 package com.backpacksrefined.client;
 
 import com.backpacksrefined.BackpacksRefined;
-import com.backpacksrefined.item.BackpacksItems;
+import com.backpacksrefined.item.BackpackItem;
+import com.backpacksrefined.item.BackpackTier;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.PartPose;
@@ -16,12 +17,23 @@ import net.minecraft.world.item.ItemStack;
 /** What drawing a worn backpack needs, on every version: its model layer, its texture and its shape. */
 public final class BackpackRendering {
     public static final ModelLayerLocation WORN_LAYER = new ModelLayerLocation(BackpacksRefined.id("backpack"), "main");
-    public static final Identifier WORN_TEXTURE = BackpacksRefined.id("textures/entity/backpack.png");
+    private static final Identifier[] WORN_TEXTURES = new Identifier[BackpackTier.values().length];
+
+    static {
+        for (BackpackTier tier : BackpackTier.values()) {
+            WORN_TEXTURES[tier.ordinal()] = BackpacksRefined.id("textures/entity/" + tier.path() + ".png");
+        }
+    }
 
     private BackpackRendering() { }
 
     public static boolean isBackpack(ItemStack stack) {
-        return stack.is(BackpacksItems.backpack());
+        return stack.getItem() instanceof BackpackItem;
+    }
+
+    /** The worn texture of {@code stack}'s tier; {@code stack} is a backpack. */
+    public static Identifier wornTexture(ItemStack stack) {
+        return WORN_TEXTURES[((BackpackItem) stack.getItem()).tier().ordinal()];
     }
 
     /**

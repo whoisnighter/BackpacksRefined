@@ -1,6 +1,7 @@
 package com.backpacksrefined.block;
 
-import com.backpacksrefined.item.BackpacksItems;
+import com.backpacksrefined.item.BackpackItem;
+import com.backpacksrefined.item.BackpackTier;
 import com.backpacksrefined.menu.BackpackMenu;
 import com.backpacksrefined.platform.BackpackIds;
 import com.backpacksrefined.platform.OpenableBlock;
@@ -37,7 +38,7 @@ import java.util.UUID;
 
 /**
  * A backpack set down on the ground, facing the way the player who placed it was looking. Used, it opens
- * as a three-row chest over the backpack's items; broken, it gives the backpack back with the same items.
+ * as a chest of a row for each nine of the backpack's slots; broken, it gives the backpack back with the same items.
  * The items never move: the block entity takes the backpack's id when it is placed, and the dropped
  * backpack takes it back (see {@link BackpackBlockEntity}).
  *
@@ -57,12 +58,19 @@ public class BackpackBlock extends OpenableBlock implements EntityBlock {
     private static final VoxelShape FLOATING_SHAPE_NORTH_SOUTH = Block.box(3.0, 0.0, 4.0, 13.0, 8.0, 12.0);
     private static final VoxelShape FLOATING_SHAPE_EAST_WEST = Block.box(4.0, 0.0, 3.0, 12.0, 8.0, 13.0);
 
-    public BackpackBlock(Properties properties) {
+    private final BackpackTier tier;
+
+    public BackpackBlock(BackpackTier tier, Properties properties) {
         super(properties);
+        this.tier = tier;
         registerDefaultState(stateDefinition.any()
                 .setValue(HorizontalDirectionalBlock.FACING, Direction.NORTH)
                 .setValue(FLOATING, false)
                 .setValue(BlockStateProperties.WATERLOGGED, false));
+    }
+
+    public BackpackTier tier() {
+        return tier;
     }
 
     @Override
@@ -115,7 +123,7 @@ public class BackpackBlock extends OpenableBlock implements EntityBlock {
         if (params.getOptionalParameter(LootContextParams.BLOCK_ENTITY) instanceof BackpackBlockEntity backpack
                 && backpack.id() != null) {
             for (ItemStack drop : drops) {
-                if (drop.is(BackpacksItems.backpack())) BackpackIds.set(drop, backpack.id());
+                if (drop.getItem() instanceof BackpackItem) BackpackIds.set(drop, backpack.id());
             }
         }
         return drops;

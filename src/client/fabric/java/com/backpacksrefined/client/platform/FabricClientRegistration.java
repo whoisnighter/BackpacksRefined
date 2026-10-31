@@ -11,6 +11,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.world.level.block.Block;
 *///?}
 
 /** Fabric API's client registries, which 26.1 renamed to Minecraft's own names. */
@@ -32,7 +33,7 @@ public final class FabricClientRegistration {
             RenderLayer layer = BackpackWornLayer.create(renderer, context.getModelSet());
             if (layer != null) helper.register(layer);
         });
-        BlockRenderLayerMap.putBlock(BackpacksBlocks.backpack(), ChunkSectionLayer.CUTOUT);
+        for (Block block : BackpacksBlocks.all()) BlockRenderLayerMap.putBlock(block, ChunkSectionLayer.CUTOUT);
         *///?}
     }
 }

@@ -30,7 +30,7 @@ public final class BackpacksRefinedNeoForge {
         });
         modBus.addListener(Network::register);
         modBus.addListener((BuildCreativeModeTabContentsEvent event) -> {
-            if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) event.accept(BackpacksItems.backpack());
+            if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) BackpacksItems.all().forEach(event::accept);
         });
     }
 }

@@ -2,6 +2,7 @@ package com.backpacksrefined.block;
 
 import com.backpacksrefined.platform.Loader;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import java.util.function.BiConsumer;
@@ -19,7 +20,7 @@ public final class BackpacksBlockEntities {
 
     /** Builds every block entity type and hands it to {@code registry} under its id. */
     public static void register(BiConsumer<Identifier, BlockEntityType<?>> registry) {
-        backpack = Loader.blockEntityType(BackpackBlockEntity::new, BackpacksBlocks.backpack());
+        backpack = Loader.blockEntityType(BackpackBlockEntity::new, BackpacksBlocks.all().toArray(Block[]::new));
         registry.accept(BACKPACK_ID, backpack);
     }
 

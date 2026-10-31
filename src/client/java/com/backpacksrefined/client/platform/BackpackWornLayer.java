@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 *///?}
 
 /**
@@ -66,7 +67,7 @@ public final class BackpackWornLayer<S extends HumanoidRenderState, M extends En
     @Override
     public void submit(PoseStack poseStack, SubmitNodeCollector collector, int light, S state, float yRot, float xRot) {
         if (!BackpackRendering.isBackpack(state.chestEquipment)) return;
-        collector.submitModel(model, state, poseStack, RenderTypes.armorCutoutNoCull(BackpackRendering.WORN_TEXTURE),
+        collector.submitModel(model, state, poseStack, RenderTypes.armorCutoutNoCull(BackpackRendering.wornTexture(state.chestEquipment)),
                 //? if >=26.3 {
                 light, OverlayTexture.NO_OVERLAY, state.outlineColor);
                 //?} else {
@@ -77,9 +78,10 @@ public final class BackpackWornLayer<S extends HumanoidRenderState, M extends En
     /*@Override
     public void render(PoseStack poseStack, MultiBufferSource buffers, int light, T entity, float limbSwing,
             float limbSwingAmount, float partialTick, float ageInTicks, float headYaw, float headPitch) {
-        if (!BackpackRendering.isBackpack(entity.getItemBySlot(EquipmentSlot.CHEST))) return;
+        ItemStack chest = entity.getItemBySlot(EquipmentSlot.CHEST);
+        if (!BackpackRendering.isBackpack(chest)) return;
         getParentModel().copyPropertiesTo(model);
-        model.body.render(poseStack, buffers.getBuffer(RenderType.armorCutoutNoCull(BackpackRendering.WORN_TEXTURE)),
+        model.body.render(poseStack, buffers.getBuffer(RenderType.armorCutoutNoCull(BackpackRendering.wornTexture(chest))),
                 light, OverlayTexture.NO_OVERLAY);
     }
     *///?}

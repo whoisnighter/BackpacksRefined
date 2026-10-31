@@ -60,16 +60,15 @@ public final class PanelServer {
         }
         UUID id = BackpackIds.getOrCreate(worn);
         SESSIONS.put(player.getUUID(), new Session(id, message.containerId()));
-        BackpackContents contents = contents(player, worn, id);
-        List<ItemStack> stacks = new ArrayList<>(contents.getContainerSize());
-        for (int slot = 0; slot < contents.getContainerSize(); slot++) stacks.add(contents.getItem(slot).copy());
-        Network.send(player, BackpackNetwork.PANEL_CONTENTS, new PanelContents(message.containerId(), stacks));
+        Network.send(player, BackpackNetwork.PANEL_CONTENTS,
+                new PanelContents(message.containerId(), snapshot(contents(player, worn, id), size(worn))));
     }
 
     public static void click(ServerPlayer player, PanelClick message) {
         BackpackContents contents = validate(player, message.containerId());
-        if (contents == null || message.slot() < 0 || message.slot() >= contents.getContainerSize()) return;
-        List<ItemStack> before = snapshot(contents);
+        int size = size(worn(player));
+        if (contents == null || message.slot() < 0 || message.slot() >= size) return;
+        List<ItemStack> before = snapshot(contents, size);
         AbstractContainerMenu menu = player.containerMenu;
         if (message.quickMove()) {
             ItemStack stack = contents.getItem(message.slot()).copy();
@@ -90,13 +89,14 @@ public final class PanelServer {
         Slot slot = menu.slots.get(message.menuSlot());
         ItemStack stack = slot.getItem();
         if (stack.isEmpty() || !slot.mayPickup(player) || !contents.canPlaceItem(0, stack)) return;
-        int room = room(contents, stack);
+        int size = size(worn(player));
+        int room = room(contents, size, stack);
         if (room <= 0) return;
-        List<ItemStack> before = snapshot(contents);
+        List<ItemStack> before = snapshot(contents, size);
         // Through the slot, so a result slot (crafting, anvil, smithing) charges what vanilla charges.
         // A result slot takes all or nothing, so with too little room nothing is taken.
         ItemStack taken = slot.safeTake(stack.getCount(), room, player);
-        insert(contents, taken);
+        insert(contents, size, taken);
         // The room was counted first, so nothing is left; if something were, it goes back where it came from.
         if (!taken.isEmpty()) taken = slot.safeInsert(taken);
         if (!taken.isEmpty()) player.getInventory().add(taken);
@@ -130,9 +130,9 @@ public final class PanelServer {
     }
 
     /** How much of {@code stack} the backpack can take: what tops up equal stacks, and empty slots. */
-    private static int room(BackpackContents contents, ItemStack stack) {
+    private static int room(BackpackContents contents, int size, ItemStack stack) {
         int room = 0;
-        for (int i = 0; i < contents.getContainerSize() && room < stack.getCount(); i++) {
+        for (int i = 0; i < size && room < stack.getCount(); i++) {
             ItemStack inSlot = contents.getItem(i);
             if (inSlot.isEmpty()) room += max(contents, stack);
             else if (Stacks.sameItem(inSlot, stack)) room += Math.max(0, max(contents, inSlot) - inSlot.getCount());
@@ -141,8 +141,8 @@ public final class PanelServer {
     }
 
     /** Puts {@code stack} in: first onto equal stacks, then into empty slots. What does not fit stays. */
-    private static void insert(BackpackContents contents, ItemStack stack) {
-        for (int i = 0; i < contents.getContainerSize() && !stack.isEmpty(); i++) {
+    private static void insert(BackpackContents contents, int size, ItemStack stack) {
+        for (int i = 0; i < size && !stack.isEmpty(); i++) {
             ItemStack inSlot = contents.getItem(i);
             if (!inSlot.isEmpty() && Stacks.sameItem(inSlot, stack)) {
                 int amount = Math.min(stack.getCount(), max(contents, inSlot) - inSlot.getCount());
@@ -152,7 +152,7 @@ public final class PanelServer {
                 }
             }
         }
-        for (int i = 0; i < contents.getContainerSize() && !stack.isEmpty(); i++) {
+        for (int i = 0; i < size && !stack.isEmpty(); i++) {
             if (contents.getItem(i).isEmpty()) contents.setItem(i, stack.split(max(contents, stack)));
         }
         contents.setChanged();
@@ -181,19 +181,27 @@ public final class PanelServer {
     }
 
     private static BackpackContents contents(ServerPlayer player, ItemStack worn, UUID id) {
-        return BackpackStorage.of(((ServerLevel) player.level()).getServer()).contents(id, ((BackpackItem) worn.getItem()).size());
+        return BackpackStorage.of(((ServerLevel) player.level()).getServer()).contents(id, size(worn));
     }
 
-    private static List<ItemStack> snapshot(BackpackContents contents) {
-        List<ItemStack> stacks = new ArrayList<>(contents.getContainerSize());
-        for (int slot = 0; slot < contents.getContainerSize(); slot++) stacks.add(contents.getItem(slot).copy());
+    /**
+     * How many slots the worn backpack's tier opens. The stored contents may hold more, when a copy of
+     * the backpack sharing its id was a larger tier; the slots past this stay as they are, unreachable.
+     */
+    private static int size(ItemStack worn) {
+        return worn.getItem() instanceof BackpackItem backpack ? backpack.size() : 0;
+    }
+
+    private static List<ItemStack> snapshot(BackpackContents contents, int size) {
+        List<ItemStack> stacks = new ArrayList<>(size);
+        for (int slot = 0; slot < size; slot++) stacks.add(contents.getItem(slot).copy());
         return stacks;
     }
 
     /** Sends the menu's changes, the carried stack among them, and the backpack slots that changed. */
     private static void finish(ServerPlayer player, int containerId, BackpackContents contents, List<ItemStack> before) {
         player.containerMenu.broadcastChanges();
-        for (int slot = 0; slot < contents.getContainerSize(); slot++) {
+        for (int slot = 0; slot < before.size(); slot++) {
             ItemStack now = contents.getItem(slot);
             ItemStack was = before.get(slot);
             if (now.getCount() != was.getCount() || !Stacks.sameItem(now, was)) {

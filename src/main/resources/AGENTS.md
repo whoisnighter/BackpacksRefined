@@ -14,6 +14,8 @@ assets/backpacksrefined/
   textures/item/backpack.png      16x16 sprite
   textures/block/backpack.png     64x64, the old mod's textures/entity/backpack.png
   textures/entity/backpack.png    64x64, the worn model; the old mod's textures/model/backpack.png
+  ...iron_, diamond_, netherite_backpack  the same files again for each upper tier, the models a child
+                                  of the leather ones with their own textures (copies of leather's for now)
   sounds.json                     what each of the mod's sound events plays
   lang/                           en_us.json holds every key; checkLang holds the others to it
 data/backpacksrefined/

@@ -1,0 +1,7 @@
+{
+  "parent": "backpacksrefined:block/backpack",
+  "textures": {
+    "backpack": "backpacksrefined:block/diamond_backpack",
+    "particle": "backpacksrefined:block/diamond_backpack"
+  }
+}
