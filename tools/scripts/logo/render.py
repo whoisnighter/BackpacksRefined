@@ -64,7 +64,7 @@ for e in d['elements']:
 pts = np.array([p for _, o, S, Tv, _ in faces for p in (o, o + S, o + Tv, o + S + Tv)])
 mn, mx = pts[:, :2].min(0), pts[:, :2].max(0)
 N = 2048
-scale = N * 0.62 / (mx - mn).max()
+scale = N * 0.72 / (mx - mn).max()
 off = N / 2 - (mn + mx) / 2 * scale
 
 img = np.zeros((N, N, 4), np.float32)

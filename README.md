@@ -4,7 +4,7 @@
 
 # Backpacks Refined
 
-A simple, immersive backpack mod for **Fabric**, **NeoForge** and **Forge**.
+A simple, immersive backpack mod.
 
 </div>
 

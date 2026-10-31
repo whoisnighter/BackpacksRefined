@@ -1,0 +1,32 @@
+// A backpack is worn with a right click, and a right click swaps it with a worn chestplate, both ways.
+//   python tools/agent/new_world.py <node> BackpackAgent
+//   ./gradlew ":<node>:runClient" -Pagent=tools/agent/gameplay/wear.jsonl -Pquickplay=BackpackAgent
+//   python tools/agent/drive.py run/<node>/agent/client tools/agent/gameplay/wear.jsonl --verify --max-age 10
+// Any node. Each item a command hands over is waited on until the client has it. Use is held for 2
+// ticks: vanilla repeats a held use every 4, and a second use would swap straight back.
+{"id": "settle", "command": "wait", "args": {"ticks": 40}, "expect": {"ok": true}}
+{"id": "clear", "command": "server.command", "args": {"command": "clear @a"}, "expect": {"ok": true}}
+{"id": "give", "command": "server.command", "args": {"command": "item replace entity @a weapon.mainhand with backpacksrefined:backpack"}, "expect": {"ok": true}}
+{"id": "synced1", "command": "wait", "args": {"ticks": 10}, "expect": {"ok": true}}
+{"id": "name", "command": "client.tooltip", "args": {"slot": "mainhand"}, "expect": {"ok": true, "result.item": "backpacksrefined:backpack", "result.lines": ["Backpack"]}}
+{"id": "use1", "command": "client.key", "args": {"key": "use", "down": true}, "expect": {"ok": true}}
+{"id": "hold1", "command": "wait", "args": {"ticks": 2}, "expect": {"ok": true}}
+{"id": "release1", "command": "client.key", "args": {"key": "use", "down": false}, "expect": {"ok": true}}
+{"id": "after1", "command": "wait", "args": {"ticks": 10}, "expect": {"ok": true}}
+{"id": "worn", "command": "client.state", "expect": {"ok": true, "result.chest.item": "backpacksrefined:backpack"}}
+{"id": "emptied", "command": "client.tooltip", "args": {"slot": "mainhand"}, "expect": {"ok": true, "result.item": "minecraft:air"}}
+{"id": "chestplate", "command": "server.command", "args": {"command": "item replace entity @a weapon.mainhand with minecraft:iron_chestplate"}, "expect": {"ok": true}}
+{"id": "synced2", "command": "wait", "args": {"ticks": 10}, "expect": {"ok": true}}
+{"id": "use2", "command": "client.key", "args": {"key": "use", "down": true}, "expect": {"ok": true}}
+{"id": "hold2", "command": "wait", "args": {"ticks": 2}, "expect": {"ok": true}}
+{"id": "release2", "command": "client.key", "args": {"key": "use", "down": false}, "expect": {"ok": true}}
+{"id": "after2", "command": "wait", "args": {"ticks": 10}, "expect": {"ok": true}}
+{"id": "swapped", "command": "client.state", "expect": {"ok": true, "result.chest.item": "minecraft:iron_chestplate"}}
+{"id": "inHand", "command": "client.tooltip", "args": {"slot": "mainhand"}, "expect": {"ok": true, "result.item": "backpacksrefined:backpack"}}
+{"id": "use3", "command": "client.key", "args": {"key": "use", "down": true}, "expect": {"ok": true}}
+{"id": "hold3", "command": "wait", "args": {"ticks": 2}, "expect": {"ok": true}}
+{"id": "release3", "command": "client.key", "args": {"key": "use", "down": false}, "expect": {"ok": true}}
+{"id": "after3", "command": "wait", "args": {"ticks": 10}, "expect": {"ok": true}}
+{"id": "back", "command": "client.state", "expect": {"ok": true, "result.chest.item": "backpacksrefined:backpack"}}
+{"id": "chestplateInHand", "command": "client.tooltip", "args": {"slot": "mainhand"}, "expect": {"ok": true, "result.item": "minecraft:iron_chestplate"}}
+{"id": "shot", "command": "client.capture", "args": {"name": "wear"}, "expect": {"ok": true}}
