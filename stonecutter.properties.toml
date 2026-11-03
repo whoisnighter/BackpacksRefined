@@ -36,7 +36,7 @@ publish.curseforge_id = ""
 # that loader's changelog from the pin up. Nothing else reads a `_latest`. Raise a pin by copying its
 # `_latest` over it.
 deps.fabric_loader = "0.19.5"
-deps.fabric_loader_latest = "0.19.5"
+deps.fabric_loader_latest = "0.20.1"
 
 # `deps.cloth_config` is the Cloth Config the config screen is built with, on Modrinth's maven. Players
 # need not install it: without it there is no screen, and config/backpacksrefined.json still applies.
@@ -52,14 +52,14 @@ mod.mc_releases = "26.3"
 mod.mc_compat = "~26.3"
 # Whether the node has the game tests (src/gametest): `runGameTest` exists, and CI runs it.
 test.gametest = true
-deps.fabric_api = "0.165.0+26.3"
+deps.fabric_api = "0.165.2+26.3"
 deps.modmenu = "21.0.0"
 deps.cloth_config = "26.3.159+fabric"
 
 [neoforge."26.3"]
 mod.mc_compat = "[26.3,26.4)"
 deps.neoforge = "26.3.0.83"
-deps.neoforge_latest = "26.3.0.83"
+deps.neoforge_latest = "26.3.0.101"
 deps.cloth_config = "26.3.159+neoforge"
 
 [fabric."26.2"]
@@ -81,7 +81,7 @@ deps.cloth_config = "21.11.153+fabric"
 mod.mc_compat = "[1.21.1,1.21.2)"
 mod.mc_releases = "1.21.1"
 deps.neoforge = "21.1.262"
-deps.neoforge_latest = "21.1.262"
+deps.neoforge_latest = "21.1.265"
 deps.cloth_config = "15.0.140+neoforge"
 
 # MinecraftForge 47, built with ModDevGradle Legacy; see build.forge.gradle.kts.
