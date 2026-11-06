@@ -59,7 +59,7 @@ jobs:
             21
             25
 
-      - uses: gradle/actions/setup-gradle@v5
+      - uses: gradle/actions/setup-gradle@v6
 
       - name: Configure Gradle for one node
         # setup-java exports every JDK as JAVA_HOME_<major>_X64 but does not tell Gradle. Configure on
